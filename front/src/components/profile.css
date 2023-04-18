@@ -1,0 +1,74 @@
+.buttonProfile {
+    border-radius: 10px;
+    margin-right: 10px;
+
+}
+
+.buttonDeleteSwap {
+    color: white;
+    background-color: red;
+    border-radius: 10px;
+
+}
+
+.swapProfile {
+    border: 1px;
+    border-color: black;
+    border-style: solid;
+    width: 95%;
+    margin-top: 5px;
+}
+
+
+
+.profileTodos {
+    margin-left: 5px
+}
+
+.swapTipo {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.profileTipo {
+    display: flex;
+    justify-content: space-between;
+    margin-top:5px;
+
+}
+
+.swapTipoButton {
+    margin-right: 5px;
+    border-radius: 10px;
+
+}
+.editProfileButton{
+    border-radius: 10px;
+    margin-bottom: 5px;
+
+}
+
+.swapItem {
+    margin-left: 5px
+}
+
+.deleteProfile {
+    margin-top: 5px;
+    color: white;
+    background-color: red;
+    border-radius: 10px;
+}
+
+.deleteProfileSure {
+    margin-top: 100px;
+    color: white;
+    background-color: red;
+    border-radius: 10px;
+   
+}
+a {
+    text-decoration: none;
+    color: inherit;
+  }

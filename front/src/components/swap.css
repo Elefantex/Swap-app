@@ -1,0 +1,10 @@
+.tituloSwap{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between
+}
+
+.createTituloSwap{
+    margin-right: 100px;
+    margin-top:10px
+}

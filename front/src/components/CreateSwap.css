@@ -1,0 +1,52 @@
+.todoCreateSwapCaja {
+    display: flex;
+    justify-content: center;
+
+}
+
+.datos {
+    border: solid;
+    border-radius: 10px;
+    background-color: white;
+    width: 500px;
+    height: auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 10px;
+}
+.buttonCreateSwap{
+    border-radius: 10px;
+       
+}
+.buttonSubmitCreateSwap{
+    border-radius: 10px;
+
+}
+@media (max-width: 480px) {
+    .datos {
+
+        width: 100%;
+        max-width: 361px;
+        padding-left: 12.5px;
+        padding-right: 12.5;
+        padding-top: 5;
+        padding-bottom: 5;
+    }
+
+}
+
+@media (max-width: 361px) {
+    .datos {
+
+        width: 100%;
+        max-width: 359px;
+        padding-left: 12.5px;
+        padding-right: 12.5;
+        padding-top: 5;
+        padding-bottom: 5;
+
+    }
+
+}

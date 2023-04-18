@@ -1,0 +1,43 @@
+.parent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 14px;
+    grid-row-gap: 14px;
+
+}
+
+.casillaHome {
+    border-radius: 10px;
+    border-color: black;
+    border: solid;
+    border-width: 10px;
+    background-color: #6d6b798c;
+    /* color de fondo del botón */
+    border: 1px;
+    border-color: black;
+    border-style: solid;
+    /* eliminamos el borde por defecto */
+    color: white;
+    /* color del texto del botón */
+    text-align: center;
+    /* alineación del texto */
+    margin-top: 10px;
+
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    height: 25vh;
+    width: 100%;
+    display: flex; /* cambia el tipo de display a flex */
+    align-items: center; /* alinea verticalmente los elementos */
+    justify-content: center; /* alinea horizontalmente los elementos */
+    flex-direction: column;
+
+}
+.iconoHome{
+    margin-top: 0%;
+}
+.textoHome{
+    margin-top:0%
+}
