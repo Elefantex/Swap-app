@@ -16,7 +16,6 @@ import About from './About';
 import Report from './components/Report';
 import CalendarioPropio from './CalendarioPropio';
 import InfoNote from './components/InfoNote';
-import ProfileNote from "./components/ProfileNote"
 import HomeScreen from './HomeSceen';
 
 function App() {
@@ -34,7 +33,6 @@ function App() {
                     <Route path="/swap/:cellDate" element={<InfoSwap />} />
                     <Route path="/note/:cellDate" element={<InfoNote />} />
                     <Route path="/" element={<CreateUser />} />
-                    <Route path="/profilenote" element={<ProfileNote />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path='/profile/:id' element={<EditProfile />} />
                     <Route path="/messenger" element={<Messenger />} />

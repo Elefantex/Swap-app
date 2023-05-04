@@ -16,6 +16,13 @@ import PuffLoader from "react-spinners/ClipLoader";
 import { fetchSwaps } from "../app/slices";
 import { getSwaps } from "../app/slices";
 import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
+import { getNotes } from "../app/slices";
+import { useDeleteNoteMutation, useUpdateNoteDeniedMutation, useUpdateNoteRequiredMutation } from "../app/apiSlice";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+
 
 
 
@@ -24,21 +31,26 @@ import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } fr
 function Profile() {
 
     const id = JSON.parse(localStorage.getItem('IDUserLogin'));
-    const dispatch = useDispatch()
     const { data: swapData = [] } = useGetUsersByIdQuery(id)
     console.log(swapData.part)
     console.log(swapData._id)
     const navigate = useNavigate()
 
+    const [nuevo, setNuevo] = useState([])
+
 
     const [fetchData, setFetchData] = useState([])
+    const [fetchDataNotes, setFetchDataNotes] = useState([])
+
     const [deleteSwap] = useDeleteSwapMutation()
-    const [deleteUser] = useDeleteUserMutation()
+    const [deleteNote] = useDeleteNoteMutation()
     const [freshSwaps, setFreshSwaps] = useState([]);
     const [expiredSwaps, setExpiredSwaps] = useState([]);
     const [swaps, setSwaps] = useState(true)
     console.log("first")
     const [isLoading, setIsLoading] = useState(false);
+    const [updateNoteDenied] = useUpdateNoteDeniedMutation()
+    const [updateNoteRequired] = useUpdateNoteRequiredMutation()
 
 
     const { data: swapDataSwap = [] } = useGetSwapsQuery()
@@ -57,14 +69,19 @@ function Profile() {
             setIsLoading(true);
 
             const data = await getSwaps();
+            const dataNotes = await getNotes()
+            setNuevo(dataNotes)
             console.log(data);
             data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
+            dataNotes.sort((a, b) => new Date(a.date) - new Date(b.date));
+            console.log(dataNotes)
             setFetchData(data.filter(swap => swap.userId === swapData._id));
+            setFetchDataNotes(dataNotes.filter(swap => swap.userId === swapData._id));
             setIsLoading(false);
         }
         fetchSwapsInfo();
     }, [swapData._id]);
+    console.log(fetchDataNotes)
 
 
     useEffect(() => {
@@ -87,16 +104,90 @@ function Profile() {
         } else {
             setExpiredSwaps((prevSwaps) => prevSwaps.filter((swap) => swap._id !== id));
         }
+        setOpenSwap(false);
+
     }
-    const deleteUserFunction = async (id) => {
+    const deleteNoteFunction = async (id) => {
         console.log(id)
-        await deleteUser(id).unwrap();
-        localStorage.clear()
-        navigate("/")
+        await deleteNote({ id }).unwrap();
+        if (swaps) {
+            setFetchDataNotes((prevSwaps) => prevSwaps.filter((swap) => swap._id !== id));
+
+        } else {
+            setFetchDataNotes((prevSwaps) => prevSwaps.filter((swap) => swap._id !== id));
+        }
+        setOpenNote(false);
+
 
     }
+    const cambiosCheckRequired = async (e, id) => {
+        const newRequested = e.target.checked;
+        try {
+            await updateNoteRequired({ id, requested: newRequested, denied: false });
+            setFetchDataNotes((prevData) => {
+                return prevData.map((item) => {
+                    if (item._id === id) {
+                        return {
+                            ...item,
+                            requested: newRequested,
+                            denied: false,
 
-    const [deleteUserWarning, setDeteleteUserWarning] = useState(false)
+                        };
+                    }
+                    return item;
+                });
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const cambiosCheckDenied = async (e, id, denied) => {
+        const newDenied = e.target.checked;
+        try {
+            await updateNoteDenied({ id, denied: newDenied, requested: false });
+            setFetchDataNotes((prevData) => {
+                return prevData.map((item) => {
+                    if (item._id === id) {
+                        return {
+                            ...item,
+                            denied: newDenied,
+                            requested: false,
+                        };
+                    }
+                    return item;
+                });
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const [openNote, setOpenNote] = useState(false);
+    const [openSwap, setOpenSwap] = useState(false);
+
+    const handleClickOpenNote2 = () => {
+        setOpenNote(true);
+    };
+    const handleClickOpenSwap2 = () => {
+        setOpenSwap(true);
+    };
+
+    const handleCloseNote = () => {
+        setOpenNote(false);
+        setSelectedNote(null)
+    };
+    const handleCloseSwap = () => {
+        setOpenSwap(false);
+        setSelectedSwap(null)
+
+    };
+    const [selectedNote, setSelectedNote] = useState(null);
+    const handleClickOpenNote = (note) => {
+        setSelectedNote(note._id);
+    }
+    const [selectedSwap, setSelectedSwap] = useState(null);
+    const handleClickOpenSwap = (note) => {
+        setSelectedSwap(note._id);
+    }
 
 
     return (
@@ -150,11 +241,11 @@ function Profile() {
                     ? <>
 
                         <Button variant="contained" className="buttonProfile"
-                            onClick={() => { setDeteleteUserWarning(false); setSwaps(true) }}
+                            onClick={() => { setSwaps(true) }}
                             style={{ backgroundColor: '#26C3FF' }}>
                             Fresh</Button>
                         <Button variant="outlined" className="buttonProfile"
-                            onClick={() => { setDeteleteUserWarning(false); setSwaps(false) }}
+                            onClick={() => { setSwaps(false) }}
                         >Expired</Button>
 
                         <div >
@@ -169,8 +260,41 @@ function Profile() {
                                                     <div className="swapTipo">
                                                         <b>{item.tipoSwap}</b>
                                                         <div className="swapTipoButton">
-                                                            <Button onClick={() => { deleteSwapFunction(item._id) }} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
+                                                            <Button onClick={()=>handleClickOpenSwap(item)} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
                                                         </div>
+                                                        <Dialog
+                                                            open={selectedSwap ===item._id}
+                                                            onClose={handleCloseSwap}
+                                                            aria-labelledby="alert-dialog-title"
+                                                            aria-describedby="alert-dialog-description"
+                                                        >
+                                                            <DialogTitle id="alert-dialog-title">
+                                                                {"Delete Swap?"}
+                                                            </DialogTitle>
+                                                            <DialogContent>
+                                                                <div id="alert-dialog-description">
+                                                                    Once deleted the info will be erased.
+                                                                </div>
+                                                            </DialogContent>
+                                                            <DialogActions>
+                                                                <Button onClick={handleCloseSwap} style={{
+                                                                    position: 'absolute',
+                                                                    bottom: 8,
+                                                                    left: 10,
+                                                                }}
+                                                                    color="success"
+                                                                    variant="contained"
+                                                                >Cancel</Button>
+                                                                <Button
+                                                                    onClick={() => deleteSwapFunction(item._id)} endIcon={<TiDelete />}
+                                                                    //onClick={handleClose}
+                                                                    autoFocus
+                                                                    color="error"
+                                                                    variant="contained">
+                                                                    Delete
+                                                                </Button>
+                                                            </DialogActions>
+                                                        </Dialog>
                                                     </div>
                                                     <div className="swapItem">
                                                         Date: {item.date}
@@ -197,10 +321,10 @@ function Profile() {
                         </div>
                     </>
                     : <>
-                        <Button variant="outlined" className="buttonProfile" onClick={() => { setDeteleteUserWarning(false); setSwaps(true) }}
+                        <Button variant="outlined" className="buttonProfile" onClick={() => { setSwaps(true) }}
                         >
                             Fresh</Button>
-                        <Button variant="contained" className="buttonProfile" onClick={() => { setDeteleteUserWarning(false); setSwaps(false) }}
+                        <Button variant="contained" className="buttonProfile" onClick={() => { setSwaps(false) }}
                             style={{ backgroundColor: '#26C3FF' }}
 
                         >Expired</Button>
@@ -215,8 +339,43 @@ function Profile() {
                                                 <div className="swapTipo">
                                                     <b>{item.tipoSwap}</b>
                                                     <div className="swapTipoButton">
-                                                        <Button onClick={() => { deleteSwapFunction(item._id) }} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
+                                                        <Button onClick={()=>handleClickOpenSwap(item)} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
                                                     </div>
+                                                    <Dialog
+                                                        open={selectedSwap===item._id}
+                                                        onClose={handleCloseSwap}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+
+
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {"Delete Swap?"}
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <div id="alert-dialog-description">
+                                                                Once deleted the info will be erased.
+                                                            </div>
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button onClick={handleCloseSwap} style={{
+                                                                position: 'absolute',
+                                                                bottom: 8,
+                                                                left: 10,
+                                                            }}
+                                                                color="success"
+                                                                variant="contained"
+                                                            >Cancel</Button>
+                                                            <Button
+                                                                onClick={() => deleteSwapFunction(item._id)} endIcon={<TiDelete />}
+                                                                //onClick={handleClose}
+                                                                autoFocus
+                                                                color="error"
+                                                                variant="contained">
+                                                                Delete
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>
                                                 </div>
                                                 <div className="swapItem">
                                                     Date: {item.date}
@@ -242,6 +401,107 @@ function Profile() {
                 }
 
             </div >
+            <h1>Created Notes:</h1>
+            <PuffLoader
+                color="#000000"
+                loading={isLoading}
+                size={30}
+                speedMultiplier="0.8"
+                aria-label="Loading Spinner"
+                data-testid="loader"
+            />
+            {fetchDataNotes.length > 0
+                ? <div>
+
+                    {fetchDataNotes.map((item, index) => {
+                        const today = new Date().toISOString().slice(0, 10);
+                        const className = item.date < today ? "swapProfileDenied" : "swapProfile";
+                        const classExpired = item.date < today ? "EXPIRED" : "";
+
+                        return (
+                            <>
+                                <div className={className}>
+                                    <div className="swapTipo">
+                                        <b>{item.crewcode} {classExpired}</b>
+
+                                        <div className="swapTipoButton">
+                                            <Button onClick={()=>handleClickOpenNote(item)}
+                                                endIcon={<TiDelete />} className="buttonDeleteSwap" color="error"
+                                                variant="contained"
+                                            >Delete Note</Button>
+                                        </div>
+                                        <Dialog
+                                            open={selectedNote === item._id}
+                                            onClose={handleCloseNote}
+                                            aria-labelledby="alert-dialog-title"
+                                            aria-describedby="alert-dialog-description"
+
+                                        >
+                                            <DialogTitle id="alert-dialog-title">
+                                                {"Delete Note?"}
+                                            </DialogTitle>
+                                            <DialogContent>
+                                                <div id="alert-dialog-description">
+                                                    Once deleted the info will be erased.
+                                                </div>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleCloseNote} style={{
+                                                    position: 'absolute',
+                                                    bottom: 8,
+                                                    left: 10,
+                                                }}
+                                                    color="success"
+                                                    variant="contained"
+                                                >Cancel</Button>
+                                                <Button
+                                                    onClick={() => deleteNoteFunction(item._id)} endIcon={<TiDelete />}
+                                                    //onClick={handleClose}
+                                                    autoFocus
+                                                    color="error"
+                                                    variant="contained">
+                                                    Delete
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                    </div>
+                                    <div className="swapItem">
+                                        Date: {item.date}
+                                    </div>
+                                    <div className="swapItem">
+                                        Start hour: {item.inicio}
+                                    </div>
+                                    <div className="swapItem">
+                                        End hour: {item.fin}
+                                    </div>
+                                    <div className="swapItem">
+                                        Info: {item.razon}
+                                    </div>
+                                    <div className="swapItem">
+                                        Requested: <input style={{
+                                            marginRight: "30px"
+                                        }}
+                                            type="checkbox"
+                                            checked={item.requested}
+                                            defaultChecked={item.requested}
+                                            onChange={(e) => cambiosCheckRequired(e, item._id, item.requested)}
+                                        />
+
+                                        Denied: <input
+                                            type="checkbox"
+                                            checked={item.denied}
+                                            defaultChecked={item.denied}
+                                            onChange={(e) => cambiosCheckDenied(e, item._id, item.denied)}
+                                        />
+
+                                    </div>
+                                </div >
+                            </>
+                        )
+                    })}
+
+                </div>
+                : <div>2</div>}
 
 
         </>

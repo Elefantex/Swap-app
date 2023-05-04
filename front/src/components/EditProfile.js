@@ -13,6 +13,11 @@ import { TiTick } from "react-icons/ti"
 import "./EditProfile.css"
 import { useDeleteUserMutation } from "../app/apiSlice";
 import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle, Checkbox } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+
 
 
 
@@ -75,10 +80,11 @@ function EditProfile() {
         else {
             try {
                 updateUser({ id: swapData._id, password: swapData.password, rank: tipoRank, roster: roster, part: part })
-                setSucces(true)
+                //setSucces(true)
+                setOpenEditProfileSucces(true);
                 setTimeout(() => {
                     navigate("/profile");
-                }, 5000);
+                }, 3000);
             }
             catch (err) {
                 console.log(err)
@@ -107,7 +113,7 @@ function EditProfile() {
                 updatePassword({ id: swapData._id, crewcode: swapData.crewcode, password: password })
                 console.log("New pas")
                 setEdit(false)
-                setSucces(true)
+                setOpenEditProfileSucces(true);
                 setFail(false)
                 setFailRoster(false)
                 setTimeout(() => {
@@ -134,6 +140,29 @@ function EditProfile() {
         localStorage.clear()
         navigate("/")
 
+    }
+    const [openEditProfileSucces, setOpenEditProfileSucces] = useState(false);
+
+    const closeEditProfileSucces = () => {
+        setOpenEditProfileSucces(false);
+
+    };
+    const [openDeleteUser, setOpenDeleteUser] = useState(false);
+
+    const closeDeleteUser = () => {
+        setOpenDeleteUser(false);
+
+    };
+    const [disabledDelete, setDisabledDelete] = useState(false)
+    const openDeleteUserProfile = () => {
+        setOpenDeleteUser(prevState => !prevState)
+        setDisabledDelete(false)
+        setTimeout(() => {
+            setDisabledDelete(true)
+        }, 5000);
+    }
+    const closeFailPassword = () => {
+        setFail(false)
     }
 
     return (
@@ -170,6 +199,9 @@ function EditProfile() {
                                     value={roster}
                                     defaultValue={swapData.roster}
                                     label="Roster"
+                                    error={roster <= 0 || roster > 16 ? true : false}
+                                    helperText={roster <= 0 || roster > 16 ? "Must be between 1-16" : ""}
+                                    style={{ width: '20ch' }}
                                 />
 
                             </div>
@@ -204,7 +236,27 @@ function EditProfile() {
                             </Button>
                         </div>
                         <div>
-                            <Button className="editProfileButton" onClick={() => { setEdit((prevState => !prevState)); setSucces(false) }} endIcon={<MdModeEdit />} style={{ backgroundColor: 'orange', margin: "10px 0px 10px 0px" }}
+                            {succes
+                                ? <div>
+
+                                    <Alert severity="success">
+                                        <AlertTitle>Succcess</AlertTitle>
+                                        Info changed correctly, redirecting to your profile
+                                        <PuffLoader
+                                            color="#000000"
+                                            loading="true"
+                                            size={30}
+                                            speedMultiplier="0.8"
+                                            aria-label="Loading Spinner"
+                                            data-testid="loader"
+                                        />
+                                    </Alert>
+
+                                </div>
+                                : <div></div>}
+                        </div>
+                        <div>
+                            <Button className="editProfileButton" onClick={() => { setEdit((prevState => !prevState)); setSucces(false); setPassword(""); setPassword2(""); setPasswordOld(""); setFail(false) }} endIcon={<MdModeEdit />} style={{ backgroundColor: 'orange', margin: "10px 0px 10px 0px" }}
                             >Edit password</Button>
                         </div>
                         <div>
@@ -265,40 +317,10 @@ function EditProfile() {
                                 : <div>
                                 </div>}
                         </div>
-                        <div>
-                            {succes
-                                ? <div>
 
-                                    <Alert severity="success">
-                                        <AlertTitle>Succcess</AlertTitle>
-                                        Info changed correctly, redirecting to your profile
-                                        <PuffLoader
-                                            color="#000000"
-                                            loading="true"
-                                            size={30}
-                                            speedMultiplier="0.8"
-                                            aria-label="Loading Spinner"
-                                            data-testid="loader"
-                                        />
-                                    </Alert>
-
-                                </div>
-                                : <div></div>}
-                        </div>
-                        <div>{fail
-                            ? <div><Alert severity="error">
-                                <AlertTitle>Error</AlertTitle>
-                                Password does not match
-                            </Alert></div>
-                            : <div></div>}</div>
+                        
                         <div>
-                            <div>
-                                {failRoster ? <div><Alert severity="warning">
-                                    <AlertTitle>Error</AlertTitle>
-                                    Roster has to be between 1 and 16
-                                </Alert></div> : <div></div>
-                                }
-                            </div>
+
 
                             <Button variant="contained" className="editProfileButton" endIcon={<GiCancel />} style={{ backgroundColor: 'gray', margin: "10px 0px 10px 0px" }}
                             ><Link to={"/profile"}>
@@ -307,28 +329,111 @@ function EditProfile() {
                         </div>
                         <div>
                             <div>
-                                <Button variant="outlined" className="deleteProfile" onClick={() => setDeteleteUserWarning(prevState => !prevState)}
+                                <Button variant="outlined" className="deleteProfile" onClick={openDeleteUserProfile}
                                     endIcon={<MdDelete />} color="error">
                                     Delete User</Button>
-                                {deleteUserWarning
-                                    ?
-                                    <div>
-                                        <Alert severity="error">
-                                            <AlertTitle>Warning</AlertTitle>
-                                            It will delete your profile permanently
-                                        </Alert>
-                                        <Button variant="outlined" className="deleteProfileSure" onClick={() => { deleteUserFunction(swapData._id) }}
-                                            endIcon={<MdDelete />} startIcon={<MdDelete />} color="error">
-                                            ¿Sure?
+                                <Dialog
+                                    open={openDeleteUser}
+                                    onClose={closeDeleteUser}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                >
+                                    <DialogTitle id="alert-dialog-title">
+                                        {"Delete user"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <div id="alert-dialog-description">
+                                            Deleting your user can not be undone, it will erase all your information
+                                        </div>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={closeDeleteUser} style={{
+                                            position: 'absolute',
+                                            bottom: 8,
+                                            left: 10,
+                                        }}
+                                            color="success"
+                                            variant="contained"
+                                        >Cancel</Button>
+                                        <Button
+                                            onClick={() => deleteUserFunction(swapData._id)} endIcon={<MdDelete />}
+                                            //onClick={handleClose}
+                                            disabled={disabledDelete ? false : true}
+                                            autoFocus
+                                            color="error"
+                                            variant="contained">
+                                            {disabledDelete ? "Delete User" : "Wait 5 seconds"}
+
                                         </Button>
-                                    </div>
-                                    : <div></div>}
+                                    </DialogActions>
+                                </Dialog>
 
                             </div>
                         </div>
 
                     </div >
+                    <Dialog
+                        disableEscapeKeyDown
+                        open={openEditProfileSucces}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            {"Info changed it correctly"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <div id="alert-dialog-description">
+                                Info changed correctly, redirecting to your profile
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <PuffLoader
+                                color="#000000"
+                                loading="true"
+                                size={30}
+                                speedMultiplier="0.8"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+
+                        </DialogActions>
+                    </Dialog>
+                    <div>
+
+                        <Dialog
+                            onClose={closeFailPassword}
+                            open={fail}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Error"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <div id="alert-dialog-description">
+                                    Password does not match or incorrect password
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+
+
+                                <Button
+                                    onClick={closeFailPassword}
+                                    //onClick={handleClose}
+                                    autoFocus
+                                    color="error"
+                                    variant="contained">
+                                    Ok
+                                </Button>
+
+
+                            </DialogActions>
+
+                        </Dialog>
+                    </div>
+
                 </div>
+
 
             </div >
 

@@ -156,7 +156,7 @@ const CalendarioPropio = () => {
                   const formattedMonth = (mes + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
                   const cellDate = `${anio}-${formattedMonth}-${formattedItem}`;
 
-                  const dataMatchInfo = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id[0])
+                  const dataMatchInfo = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id[0] && dataItem.denied !== true)
 
                   return (
                     <th key={key + i} className="dia">
@@ -171,10 +171,12 @@ const CalendarioPropio = () => {
                             {dataMatchInfo.slice(0, 3).map((item, index) => (
                               <div key={index}>
                                 <Link to={`/note/${cellDate}`}>
+
                                   <div
                                     style={{
                                       height: `${(60 / dataMatchInfo.length)}%`,
-                                      backgroundColor: colors[index % colors.length],
+                                      backgroundColor: item.denied === true ? "gray" : colors[index % colors.length],
+                                      //backgroundColor: colors[index % colors.length],
                                       position: "absolute",
                                       bottom: `${index * (60 / dataMatchInfo.length)}%`,
                                       left: 0,
@@ -183,6 +185,7 @@ const CalendarioPropio = () => {
                                       textAlign: "center",
                                     }}
                                   >
+                                    
                                     {item.crewcode}
                                   </div>
                                 </Link>

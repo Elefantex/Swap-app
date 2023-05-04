@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { useUpdateNoteDeniedMutation, useUpdateNoteRequiredMutation } from '../app/apiSlice';
 import "./swap.css"
 import { TiDelete } from "react-icons/ti"
-import { TbMessageDots } from "react-icons/tb"
 import { fetchNotesDate, getNotesDate } from '../app/slices';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -20,7 +19,6 @@ function Note() {
     const [updateNoteRequired] = useUpdateNoteRequiredMutation()
     const id = localStorage.getItem("IDUserLogin")
     const id2 = JSON.parse(id)
-    const [conversationId, setConversationId] = useState(null); // state to store the conversation ID
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -52,7 +50,7 @@ function Note() {
             const index = newData.findIndex((item) => item._id === id);
             newData[index] = { ...newData[index], denied: newDenied, requested: false };
             setData(newData);
-            await refetch(); // Reload the data
+            //await refetch(); // Reload the data
         } catch (err) {
             console.log(err);
         }
@@ -80,22 +78,21 @@ function Note() {
 
     useEffect(() => {
         setData(nuevo);
-    }, [setNuevo, nuevo, setData, conversationId]);
+    }, [setNuevo, nuevo, setData]);
 
 
     const dataMatchSwap = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id2[0])
     console.log(dataMatchSwap)
 
 
-
-
-
-
+    const fechaOriginal = cellDate
+    const partes = fechaOriginal.split('-');
+    const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
 
     return (
         <div className='profileTodos'>
             <div className='tituloSwap'>
-                <h1>Info about your swasps request</h1>
+                <h1>Info about your swasps request {fechaFormateada}</h1>
                 <div className='createTituloSwap'>
                     <Link to={`/createNote`} state={{ dateFrom: cellDate }}>
 

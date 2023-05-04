@@ -72,7 +72,26 @@ function CreateSwap() {
           <>
             <div>
 
-              <h1>{tipoSwap ? <div>{tipoSwap}</div> : <div>Choose the type</div>}</h1>
+              <h1>{tipoSwap ? <div className="splitCreateSwap">
+                {tipoSwap}
+                <Button
+                  onClick={() => navigate("/calendar")}
+                  variant="outlined" type="submit" endIcon={<AiOutlineCalendar />} className='buttonCreateSwap'
+                >
+                  Go to
+                </Button>
+              </div>
+                :
+                <div className='splitCreateSwap'>
+                  Create swap
+                  <Button
+                    onClick={() => navigate("/calendar")}
+                    variant="outlined" type="submit" endIcon={<AiOutlineCalendar />} className='buttonCreateSwap'
+
+                  >
+                    Go to
+                  </Button></div>}</h1>
+
               <form onSubmit={submitForm} className='swapform'>
                 <div>
                   <Select

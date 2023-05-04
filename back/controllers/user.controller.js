@@ -118,6 +118,21 @@ exports.login = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+exports.loginRecover = async (req, res) => {
+  const { crewcode, rank, email } = req.body;
+
+  try {
+    const user = await User.findOne({ crewcode, rank, email }).exec();
+    if (!user) {
+      return res.status(401).send({ message: "Invalid crewcode or password" });
+    }
+
+    res.send({ message: "Login recover successful", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: err.message });
+  }
+};
 exports.recoverPassword = async (req, res) => {
   const { crewcode, rank, email } = req.body;
 
@@ -133,7 +148,21 @@ exports.recoverPassword = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+exports.recoverPasswordCreateUser = async (req, res) => {
+  const { _id, password } = req.body;
 
+  try {
+    const user = await User.findOneAndUpdate({ _id }, { password }, { new: true });
+    if (!user) {
+      return res.status(401).send({ message: "Invalid _id or password" });
+    }
+
+    res.send({ message: "Password updated successfully", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: err.message });
+  }
+};
 exports.userInfo = (req, res) => {
   const id = req.params.id;
 

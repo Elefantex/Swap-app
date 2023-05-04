@@ -13,14 +13,17 @@ import { AiOutlineSend, AiOutlineCalendar } from "react-icons/ai"
 
 
 function CreatNote() {
+    const id2 = localStorage.getItem("IDUserLogin")
+    const id = JSON.parse(localStorage.getItem('IDUserLogin'));
+    const navigate = useNavigate();
+
     useEffect(() => {
-        if (!id) {
+        if (!id2) {
             navigate("/")
         }
     }, [])
 
     const [createNote] = useCreateNoteMutation();
-    const navigate = useNavigate();
     const location = useLocation()
     const dateFrom = location.state
 
@@ -32,8 +35,7 @@ function CreatNote() {
     const [razon, setRazon] = useState("")
     const [tipoSwap, setTipoSwap] = useState("")
     const rank = localStorage.getItem('Rank');
-    const id = JSON.parse(localStorage.getItem('IDUserLogin'));
-   
+
 
     useEffect(() => {
         if (dateFrom !== null) {
@@ -51,8 +53,12 @@ function CreatNote() {
 
     const submitForm = (e) => {
         e.preventDefault();
-        createNote({ date, inicio, fin, razon, rank, crewcode, userId: id[0], requested: true, denied: false })
-        setSwapDone(true)
+        if (crewcode.length === 6) {
+            createNote({ date, inicio, fin, razon, rank, crewcode, userId: id[0], requested: true, denied: false })
+            setSwapDone(true)
+        }
+
+
     }
     console.log(id)
     console.log(swapData.roster)
@@ -68,7 +74,7 @@ function CreatNote() {
                         <div>
                             <Button
                                 onClick={() => navigate("/calendariopropio")}
-                                variant="outlined" type="submit" endIcon={<AiOutlineCalendar />} className='buttonSubmitCreateSwap'>
+                                variant="outlined" endIcon={<AiOutlineCalendar />} className='buttonSubmitCreateSwap'>
                                 Go to calendar
                             </Button>
                         </div>
@@ -76,7 +82,18 @@ function CreatNote() {
                     :
                     <>
                         <div>
-                            <h1>{tipoSwap ? <div>{tipoSwap}</div> : <div>Create note</div>}</h1>
+                            <h1>
+                                <div className='splitCreateSwap'>
+                                    Create note
+                                    <Button
+                                        onClick={() => navigate("/calendariopropio")}
+                                        variant="outlined" endIcon={<AiOutlineCalendar />} 
+                                        
+                                        className='buttonSubmitCreateSwapNote'>
+                                        Go to
+                                    </Button>
+                                </div>
+                            </h1>
                             <form onSubmit={submitForm} className='swapform'>
                                 <div>
                                     <InputLabel >Date:</InputLabel>
@@ -118,6 +135,8 @@ function CreatNote() {
                                         <TextField id="outlined-basic" variant="outlined"
                                             inputProps={{ maxLength: 6, minLength: 6 }}
                                             type="text"
+                                            error={crewcode.length !== 6 && crewcode.length !== 0 ? true : false}
+                                            helperText={crewcode.length !== 6 && crewcode.length !== 0 ? "Crewcode has to be 6 letters" : ""}
                                             value={crewcode}
                                             placeholder="Crewcode"
                                             onChange={handleInputChange}

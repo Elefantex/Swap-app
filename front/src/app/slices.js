@@ -47,6 +47,32 @@ export const fetchUsersLogin = createAsyncThunk("users/getUsersLogin", async ({ 
     const response = await getUsersLogin({ crewcode, password });
     return response
 });
+export const getUsersLoginRecover = async ({ crewcode,rank,email }) => {
+    try {
+        const response = await axios.post(`http://localhost:3001/users/loginRecover`, { crewcode,rank,email });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const fetchUsersLoginRecover = createAsyncThunk("users/getUsersLoginRecover", async ({ crewcode,rank,email}) => {
+    const response = await getUsersLoginRecover({ crewcode,rank,email});
+    return response
+});
+export const getPasswordChangeCreate = async ({ _id,password}) => {
+    try {
+        const response = await axios.post(`http://localhost:3001/users/recoverPassword`, { _id,password});
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const fetchPasswordChangeCreate= createAsyncThunk("users/getPasswordChangeCreate", async ({ _id,password}) => {
+    const response = await getPasswordChangeCreate({ _id,password});
+    return response
+});
 
 
 

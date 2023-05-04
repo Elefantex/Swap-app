@@ -10,8 +10,8 @@
 }
 
 .conversations {
-  width: 300px;
-  overflow-y: scroll;
+  width: 100%;
+
 }
 
 .current-chat {
@@ -36,14 +36,11 @@
     flex-direction: column;
   }
 
+
   .conversations {
     width: 100%;
+    overflow-y: scroll;
   }
-}
-
-.messenger {
-  height: calc(100vh - 70px);
-  display: flex;
 }
 
 .chatMenu {
@@ -142,7 +139,6 @@
 
 .conversationsTry {
   display: flex;
-  overflow-x: scroll;
   scroll-behavior: smooth;
   width: 100%;
 }
@@ -162,4 +158,9 @@
   background-color: red;
   border-radius: 10px;
 }
+
+
+
+
+
 

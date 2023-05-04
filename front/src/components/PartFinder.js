@@ -40,7 +40,7 @@ function PartFinder() {
     console.log(fetchData)
 
 
-    const todo = async (receiverId) => {
+    const todo = async (receiverId, index) => {
         setErrorConversation(false)
         setSuccesConversation(false)
 
@@ -50,7 +50,7 @@ function PartFinder() {
         await createChat({ senderId: id2[0], receiverId: receiverId })
 
             .then((savedConversation) => {
-                createMessage({ sender: id2[0], text: newMessage, conversationId: savedConversation.data._id })
+                createMessage({ sender: id2[0], text: newMessage[index], conversationId: savedConversation.data._id })
                 setNewMessage("")
                 //setIsOpen(false)
                 setSuccesConversation(true)
@@ -64,6 +64,7 @@ function PartFinder() {
     const handleInputChange = (e, index) => {
         const { value } = e.target;
         setNewMessage((prevState) => ({ ...prevState, [index]: value }));
+        console.log(newMessage[index])
     };
 
 
@@ -91,20 +92,28 @@ function PartFinder() {
                                             <div>Roster: {item.roster}</div>
                                             <div>Rank: {item.rank}</div>
                                         </div>
-                                        {isOpen[index]
-                                            ? <div></div>
-                                            : <div>
-                                                <button onClick={() => {
-                                                    setErrorConversation(false);
-                                                    setSuccesConversation(false);
-                                                    setIsOpen(prevState => ({ ...prevState, [index]: !prevState[index] }));
-                                                    setNewMessage("")
+                                        
+                                        {item._id !== id2[0]
+                                            ? <div>
 
-                                                }}
-                                                    className="buttonSendPart">Send a message</button>
+                                                {isOpen[index] === true
+                                                    ? <div></div>
+                                                    : <div>
+                                                        <button onClick={() => {
+                                                            setErrorConversation(false);
+                                                            setSuccesConversation(false);
+                                                            setIsOpen(prevState => ({ ...prevState, [index]: !prevState[index] }));
+                                                            setNewMessage("")
+
+                                                        }}
+                                                            className="buttonSendPart">Send a message</button>
+                                                    </div>}
+                                            </div>
+                                            : <div>
                                             </div>}
+
                                         {
-                                            isOpen[index] === true
+                                            isOpen[index] === true && item._id !== id2[0]
                                                 ? <>
                                                     <div>
                                                         <textarea name=""
@@ -114,12 +123,12 @@ function PartFinder() {
                                                             rows="5"
                                                             placeholder="Write something..."
                                                             onChange={(e) => handleInputChange(e, index)}
-                                                            value={newMessage[index] || ""}
+                                                            value={newMessage[index]}
                                                             required
                                                         >
                                                         </textarea>
                                                         <div className="buttonPartFinder">
-                                                            <button onClick={() => todo(item._id)} className="buttonSendPart"> Send </button>
+                                                            <button onClick={() => todo(item._id, index)} className="buttonSendPart"> Send </button>
                                                         </div>
                                                     </div>
                                                     {errorConversation

@@ -12,6 +12,7 @@ import { io } from "socket.io-client"
 import { useDeleteConversationMutation } from "../../app/apiSlice";
 import { fetchConversation } from "../../app/slices";
 import { useNavigate } from "react-router-dom";
+
 import "./Messenger.css"
 
 function Messenger() {
@@ -31,6 +32,7 @@ function Messenger() {
     const id = JSON.parse(localStorage.getItem('IDUserLogin'));
 
 
+
     useEffect(() => {
         if (!id) {
             navigate("/")
@@ -38,7 +40,7 @@ function Messenger() {
     }, [])
 
     useEffect(() => {
-        socket.current = io("ws://localhsost:3002")
+        socket.current = io("ws://localhost:3002")
         socket.current.on("getMessage", data => {
             setArrivalMessage({
                 sender: data.senderId,
@@ -55,8 +57,7 @@ function Messenger() {
 
 
 
-    //const { data: swapData = [] } = useGetConversationsQuery(id)
-    //console.log(swapData)
+
 
     const { data: data = [] } = useGetUsersByIdQuery(id)
     //console.log(data)
@@ -89,6 +90,9 @@ function Messenger() {
         };
         getConversations();
     }, [dispatch, arrivalMessage])
+    console.log(conversations)
+
+
 
     useEffect(() => {
         const getMessages = async () => {
@@ -96,9 +100,11 @@ function Messenger() {
             setMessages(response.payload);
         };
         getMessages();
-        //const intervalId = setInterval(getMessages, 1000); // Set a timeout every 500ms
+        //const intervalId = setInterval(getMessages, 1000); // Set a timeout every 1000ms
         //return () => clearInterval(intervalId);
     }, [dispatch, currentChat, newMessage])
+    console.log(messages)
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -117,12 +123,28 @@ function Messenger() {
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behaviour: "smooth" })
     }, [messages])
-
-    const handleChatClick = (conversation) => {
+    const [open, setOpen] = useState(false)
+    const handleChatClick = (conversation, index) => {
         if (conversation === currentChat) {
             setCurrentChat(null);
+            console.log(index)
+            setOpen(prevState => ({ ...prevState, [index]: false }));
         } else {
             setCurrentChat(conversation);
+            console.log(index)
+            setOpen(prevState => {
+                const newOpen = {};
+                Object.keys(prevState).forEach(key => {
+                    newOpen[key] = key === index;
+                });
+                return newOpen;
+            });
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSubmit(e)
         }
     };
 
@@ -130,22 +152,28 @@ function Messenger() {
 
     return (
         <>
+
             <div className="prueba">
 
                 <div>
-                    <h1>
+                    <h1 >
                         Welcome :  {data.crewcode}
+
                     </h1>
+
                     <div className="conversations">
                         <div className="conversationsTry">
 
-                            {conversations.map((item, i) =>
+                            {conversations.map((item, index) =>
                                 <>
 
-                                    <div onClick={() => handleChatClick(item)}>
-                                        <div className="conversationMessenger">
-                                            <Conversation conversation={item} currentUser={data._id} />
+                                    <div onClick={() => handleChatClick(item, index)}
+                                    >
+                                        <div
+                                            className="conversationMessenger"
 
+                                            style={{ backgroundColor: currentChat === item ? "blue" : "gray" }} >
+                                            <Conversation conversation={item} currentUser={data._id} />
                                         </div>
 
                                     </div>
@@ -154,11 +182,7 @@ function Messenger() {
                             )}
 
                         </div>
-                        {currentChat ?
-                            <div><button onClick={() => { deleteConversationChat(currentChat?._id) }} className="deleteConversation">Delete conversation</button>
-                            </div>
-                            : <div></div>
-                        }
+
 
 
                     </div>
@@ -171,6 +195,11 @@ function Messenger() {
                             {
                                 currentChat
                                     ? <>
+                                        {currentChat ?
+                                            <div><button onClick={() => { deleteConversationChat(currentChat?._id) }} className="deleteConversation">Delete conversation</button>
+                                            </div>
+                                            : <div></div>
+                                        }
                                         <div className="chatBoxTop">
 
                                             {messages.map((m) =>
@@ -179,22 +208,24 @@ function Messenger() {
                                                 </div>
 
                                             )}
-                                            
+
                                         </div>
                                         <div className="chatBoxBottom">
-                                                <textarea
-                                                    className="chatMessageInput"
-                                                    name=""
-                                                    id=""
-                                                    cols="30"
-                                                    rows="10"
-                                                    placeholder="Write something..."
-                                                    onChange={(e) => setNewMessage(e.target.value)}
-                                                    value={newMessage}
-                                                >
-                                                </textarea>
-                                                <button className="chatSubmitButton" onClick={handleSubmit}>Send</button>
-                                            </div>
+                                            <textarea
+                                                className="chatMessageInput"
+                                                name=""
+                                                id=""
+                                                cols="30"
+                                                rows="10"
+                                                placeholder="Write something..."
+                                                onChange={(e) => setNewMessage(e.target.value)}
+                                                value={newMessage}
+                                                onKeyDown={handleKeyDown}
+                                            >
+                                            </textarea>
+                                            <button className="chatSubmitButton"
+                                                onClick={handleSubmit}>Send</button>
+                                        </div>
 
                                     </>
                                     :

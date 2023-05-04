@@ -2,11 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
-import { fetchUsersLogin } from "../app/slices";
+import { fetchUsersLogin, fetchUsersLoginRecover } from "../app/slices";
 import { useUpdateUserPasswordMutation } from "../app/apiSlice";
 import "./CreateUser.css"
 import { createUSer } from "../app/slices";
 import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
+import { getUsersLoginRecover, getPasswordChangeCreate } from "../app/slices";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import PuffLoader from "react-spinners/ClipLoader";
+
 
 
 
@@ -101,6 +108,7 @@ const CreateUser = () => {
                 setCrewCodeLogin(crewcode)
                 setPasswordLogin(password)
                 console.log("User was created successfully!");
+                dispatch(fetchUsersLogin({ crewcode: crewcode, password: password }))
             } catch (err) {
                 console.log("error en user")
                 console.log(err);
@@ -133,8 +141,12 @@ const CreateUser = () => {
                         console.log(userFilter._id);
                         const storeIdLocalStorage = [userFilter._id];
                         const storeRankLocalStorage = userFilter.rank;
+                        const storeRosterLocalStorage = userFilter.roster;
+
                         localStorage.setItem("IDUserLogin", JSON.stringify(storeIdLocalStorage));
                         localStorage.setItem("Rank", JSON.stringify(storeRankLocalStorage));
+                        localStorage.setItem("Roster", JSON.stringify(storeRosterLocalStorage));
+
                         navigate("/home");
                     } else {
                         setDifferentLogin(false);
@@ -150,54 +162,61 @@ const CreateUser = () => {
                 console.log("Nada encontrado");
             });
     };
+    const [idRecover, setIdRecover] = useState("")
+    const [crewcodeLoginRecover, setCrewcodeLoginRecover] = useState("")
+    const [errorRecover, setErrorRecover] = useState("")
+    const recoverPassword = async () => {
+        setIdRecover("")
+        try {
+            console.log("first")
+            const response = await getUsersLoginRecover({ crewcode: crewcodeRecover, rank: rankRecover, email: emailRecover });
+            console.log(response.user)
+            setRecoverSucces(true)
+            setIdRecover(response.user._id)
+            setCrewcodeLoginRecover(response.crewcode)
+            setErrorRecover(false)
 
-    const recoverPassword = () => {
-        console.log("first")
-        dispatch(fetchUsersLogin()).then((response) => {
-            const userFilter = response.payload.find(
-                (user) => user.crewcode === crewcodeRecover && user.rank === rankRecover && user.email === emailRecover
-            );
-            if (userFilter) {
-                setRecoverSucces(true)
-                console.log("funciona")
-                setRecoverSuccesFail(false)
-            }
-            else {
-                setRecoverSucces(false)
-                setRecoverSuccesFail(true)
-            }
-        })
+
+        } catch (error) {
+            console.error(error);
+            setRecoverSucces(false)
+            setErrorRecover(true)
+
+        }
     }
 
-    const editPassword = () => {
+    const [openEditPasswordSucces, setOpenEditPasswordSucces] = useState(false)
+
+    const [editPasswordSucces, setEditPasswordSucces] = useState(false)
+    const editPassword = async () => {
 
         if (passwordNew !== passwordNew2) {
             setRecoverPasswordFail(true)
+            setEditPasswordSucces(true)
             return
         }
 
         else {
-            dispatch(fetchUsersLogin()).then((response) => {
-                const userFilter = response.payload.find(
-                    (user) => user.crewcode === crewcodeRecover && user.rank === rankRecover && user.email === emailRecover
-                );
-                if (userFilter) {
-                    updatePassword({ id: userFilter._id, crewcode: userFilter.crewcode, password: passwordNew })
-                    setPasswordNew("")
-                    setPasswordNew2("")
-                    setCrewCodeRecover("")
-                    setEmailRecover("")
-                    setRecoverSucces(false)
-                    setRecover(false)
-                    setSucces(true)
-                    setRecoverPasswordFail(false)
-                }
-                else {
-                    setRecoverSucces(false)
-                }
-            })
-
-
+            try {
+                const response = await getPasswordChangeCreate({ _id: idRecover, password: passwordNew });
+                console.log(response)
+                setOpenEditPasswordSucces(true)
+                setRecover(false)
+                setRecoverSucces(false)
+                setCrewCodeRecover("")
+                setPasswordNew("")
+                setPasswordNew2("")
+                setEmailRecover("")
+                setTipoRankRecover("")
+                setEditPasswordSucces(false)
+                setTimeout(() => {
+                    setOpenEditPasswordSucces(false)
+                }, 3000);
+            }
+            catch (err) {
+                console.error(err);
+                setEditPasswordSucces(true)
+            }
             //setEdit(false)
             //setSucces(true)
             //setFail(false)
@@ -220,7 +239,47 @@ const CreateUser = () => {
         const value = event.target.value.replace(/[^A-Za-z]/g, ""); // remove non-letter characters
         setCrewCodeRecover(value.toUpperCase()); // convert to uppercase
     };
+    const changeRegistro = () => {
+        setRegistro(true)
+        setCrewcode("")
+        setCrewCodeLogin("")
+        setCrewCodeRecover("")
+        setEmail("")
+        setPassword("")
+        setPassword2("")
+        setTipoRank("")
+        setPasswordLogin("")
+        setRecoverSucces(false)
+        setRecover(false)
+        setTipoRankRecover("")
+        setEmailRecover("")
+        setPasswordNew("")
+        setPasswordNew2("")
+        setErrorRegister(false)
+        setDifferentPassword(false)
+        setDifferentLogin(true)
 
+    }
+    const changeLogin = () => {
+        setRegistro(false)
+        setCrewcode("")
+        setCrewCodeLogin("")
+        setCrewCodeRecover("")
+        setEmail("")
+        setPassword("")
+        setPassword2("")
+        setTipoRank("")
+        setPasswordLogin("")
+        setRecoverSucces(false)
+        setRecover(false)
+        setTipoRankRecover("")
+        setEmailRecover("")
+        setPasswordNew("")
+        setPasswordNew2("")
+        setErrorRegister(false)
+        setDifferentPassword(false)
+        setDifferentLogin(true)
+    }
 
     return (
 
@@ -230,9 +289,9 @@ const CreateUser = () => {
                 {registro ? (
                     <div>
                         <div>
-                            <Button variant="outlined" className="buttonProfile" onClick={() => setRegistro(false)}>
+                            <Button variant="outlined" className="buttonProfile" onClick={changeLogin}>
                                 Login</Button>
-                            <Button variant="contained" className="buttonProfile" onClick={() => setRegistro(true)}
+                            <Button variant="contained" className="buttonProfile" onClick={changeRegistro}
                                 style={{ backgroundColor: '#26C3FF' }}
                             >Register</Button>
                         </div>
@@ -248,6 +307,8 @@ const CreateUser = () => {
                                 onChange={handleInputChange}
                                 maxLength="6"
                                 minLength="6"
+                                error={crewcode.length !== 6 && crewcode.length !== 0 ? true : false}
+                                helperText={crewcode.length !== 6 && crewcode.length !== 0 ? "Has to be 6 characters" : ""}
                                 required
                             />
 
@@ -272,6 +333,15 @@ const CreateUser = () => {
                                     value={password}
                                     placeholder="Password"
                                     onChange={(e) => setPassword(e.target.value)}
+                                    error={password.length < 6 && password.length !== 0}
+                                    helperText={
+                                        password.length < 6 && password.length !== 0
+                                            ? "Password too short"
+                                            : ""
+                                    }
+                                    inputProps={{
+                                        minLength: 6,
+                                    }}
                                     required />
                                 <Button onClick={switchShown2} variant="text" style={{ margin: "10px 0px 0px 10px" }}>Show</Button>
                             </div>
@@ -284,6 +354,15 @@ const CreateUser = () => {
                                     value={password2}
                                     placeholder="Password"
                                     onChange={(e) => setPassword2(e.target.value)}
+                                    error={password2.length < 6 && password2.length !== 0}
+                                    helperText={
+                                        password2.length < 6 && password2.length !== 0
+                                            ? "Password too short"
+                                            : ""
+                                    }
+                                    inputProps={{
+                                        minLength: 6,
+                                    }}
                                     required
                                 />
                                 <Button onClick={switchShown2} variant="text" style={{ margin: "10px 0px 0px 10px" }}>Show</Button>
@@ -333,12 +412,7 @@ const CreateUser = () => {
                                 Error in any field or Crewcode is on use
                             </Alert>
                         </div> : <div></div>}
-                        {crewcode.length !== 6 &&crewcode.length !==0 ? <div>
-                            <Alert severity="warning">
-                                <AlertTitle>Error</AlertTitle>
-                                Crewcode has to be 6 letters
-                            </Alert>
-                        </div> : <div></div>}
+
                         {failRoster ? <div>
                             <Alert severity="warning">
                                 <AlertTitle>Error</AlertTitle>
@@ -350,11 +424,11 @@ const CreateUser = () => {
                 ) : (
                     <div>
                         <div>
-                            <Button variant="contained" className="buttonProfile" onClick={() => setRegistro(false)}
+                            <Button variant="contained" className="buttonProfile" onClick={changeLogin}
                                 style={{ backgroundColor: '#26C3FF' }}
 
                             >Login </Button>
-                            <Button variant="outlined" className="buttonProfile" onClick={() => setRegistro(true)}>Register </Button>
+                            <Button variant="outlined" className="buttonProfile" onClick={changeRegistro}>Register </Button>
 
 
                             <div>
@@ -381,6 +455,7 @@ const CreateUser = () => {
                             value={passwordLogin}
                             placeholder="Password"
                             onChange={(e) => setPasswordLogin(e.target.value)}
+
                             required
                         />
                         <Button onClick={switchShown2} variant="text" style={{ margin: "10px 0px 0px 10px" }}>Show</Button>
@@ -395,7 +470,10 @@ const CreateUser = () => {
                             </Button>
                         </div>
                         <div>
-                            <Button variant="contained" color="success" onClick={() => setRecover(prevState => !prevState)} className="buttonProfile">Recover password</Button>
+                            <Button variant="contained" color="success" onClick={() => {
+                                setRecoverSucces(false);
+                                setRecover(prevState => !prevState);
+                            }} className="buttonProfile">Recover password</Button>
 
                         </div>
                         {recover
@@ -434,6 +512,8 @@ const CreateUser = () => {
                                     inputProps={{ type: "text" }}
                                     placeholder="Email"
                                     onChange={(e) => setEmailRecover(e.target.value)}
+                                    error={errorRecover ? true : false}
+                                    helperText={errorRecover ? "Error in any field" : ""}
                                     required
                                 />
                                 <div>
@@ -450,6 +530,16 @@ const CreateUser = () => {
                                             value={passwordNew}
                                             placeholder="Password"
                                             onChange={(e) => setPasswordNew(e.target.value)}
+                                            error={editPasswordSucces && passwordNew.length < 6}
+                                            helperText={
+                                                editPasswordSucces && passwordNew.length < 6
+                                                    ? "Passwords do not match or too short"
+                                                    : ""
+                                            }
+                                            inputProps={{
+                                                minLength: 6,
+                                            }}
+
                                             required
                                         />
                                         <Button onClick={switchShown3} variant="text" style={{ margin: "10px 0px 0px 10px" }}>Show</Button>
@@ -463,6 +553,15 @@ const CreateUser = () => {
                                             value={passwordNew2}
                                             placeholder="Password"
                                             onChange={(e) => setPasswordNew2(e.target.value)}
+                                            error={editPasswordSucces && passwordNew2.length < 6}
+                                            helperText={
+                                                editPasswordSucces && passwordNew2.length < 6
+                                                    ? "Passwords do not match or too short"
+                                                    : ""
+                                            }
+                                            inputProps={{
+                                                minLength: 6,
+                                            }}
                                             required
                                         />
                                         <Button onClick={switchShown3} variant="text" style={{ margin: "10px 0px 0px 10px" }}>Show</Button>
@@ -478,12 +577,7 @@ const CreateUser = () => {
                                         </Alert>
                                     </div>
                                     : <div></div>}</div>}
-                                {recoverPasswordFail ? <div>
-                                    <Alert severity="error">
-                                        <AlertTitle>Error</AlertTitle>
-                                        Password does not match
-                                    </Alert>
-                                </div> : <div></div>}
+
                             </div>
                             : <div></div>}
                         {differentLogin ? <div></div> : <div>
@@ -498,10 +592,36 @@ const CreateUser = () => {
                                     <AlertTitle>Error</AlertTitle>
                                     Password changed it correctly
                                 </Alert>
-                                </div>
+                            </div>
                             : <div></div>}
                     </div>
                 )}
+                <Dialog
+                    disableEscapeKeyDown
+                    open={openEditPasswordSucces}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Info changed it correctly"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <div id="alert-dialog-description">
+                            Info changed correctly, redirecting
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <PuffLoader
+                            color="#000000"
+                            loading="true"
+                            size={30}
+                            speedMultiplier="0.8"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+
+                    </DialogActions>
+                </Dialog>
             </div>
 
         </div>

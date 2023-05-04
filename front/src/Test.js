@@ -22,6 +22,10 @@ const Test = () => {
 
 
   const id = JSON.parse(localStorage.getItem('IDUserLogin'));
+
+  const rosterId = JSON.parse(localStorage.getItem("Roster"))
+  console.log(rosterId)
+
   useEffect(() => {
     if (!id) {
       navigate("/")
@@ -86,6 +90,7 @@ const Test = () => {
     setPrueba(filas);
   };
   const [newCheckedValues, setNewCheckedValues] = useState([])
+
   const filterRoster = () => {
     const checkboxes = document.getElementsByName('roster');
     const checkedValues = [];
@@ -95,16 +100,14 @@ const Test = () => {
       if (checkboxes[i].checked) {
         checkedValues.push(checkboxes[i].value);
         console.log(checkboxes[i].value)
-
       }
-
     }
+
 
     if (checkedValues.length === 0) {
       // If no checkboxes are checked, assume the user wants to select all options
       setData(originalData);
       setNewCheckedValues(checkedValues)
-
       return;
     }
 
@@ -116,8 +119,10 @@ const Test = () => {
     //console.log(newDataFilterRoster);
     setNewCheckedValues(checkedValues)
     console.log(checkedValues)
-
   }
+
+
+
   console.log(newCheckedValues)
 
 
@@ -150,7 +155,7 @@ const Test = () => {
       <div className="mes">
         <div className="">
           <button className="botonIzq" onClick={mesAnterior}>
-          {"<"}
+            {"<"}
           </button>
         </div>
         <div className="mesTexto">
@@ -180,13 +185,11 @@ const Test = () => {
           return (
             <>
               <label className="" style={{ margin: "10px" }}><b>{item}</b>
-                <input className="" type="checkbox" name="roster" id="roster-`${item}`" onChange={filterRoster} value={item} />
+                <input  className="" type="checkbox" name="roster" id="roster-`${item}`" onChange={filterRoster} value={item} />
               </label>
             </>
           )
         })}
-
-
 
       </div>
       <table className="tabla">

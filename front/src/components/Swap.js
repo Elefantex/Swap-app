@@ -14,6 +14,10 @@ import { TiDelete } from "react-icons/ti"
 import { TbMessageDots } from "react-icons/tb"
 import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
 import { Link } from 'react-router-dom';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 function Swap() {
@@ -54,6 +58,8 @@ function Swap() {
         console.log(id)
         await deleteSwap({ id }).unwrap();
         window.location.reload()
+        setOpenSwap(false);
+
     }
     const [nuevo, setNuevo] = useState([])
     useEffect(() => {
@@ -84,7 +90,7 @@ function Swap() {
             return false;
         }
     });
-    const todo = async (receiverId) => {
+    const todo = async (receiverId, index) => {
 
         console.log("sadasd");
         console.log(receiverId);
@@ -92,7 +98,7 @@ function Swap() {
         await createChat({ senderId: id2[0], receiverId: receiverId })
 
             .then((savedConversation) => {
-                createMessage({ sender: id2[0], text: newMessage, conversationId: savedConversation.data._id })
+                createMessage({ sender: id2[0], text: newMessage[index], conversationId: savedConversation.data._id })
                 setNewMessage("")
                 setSuccesConversation(true)
             })
@@ -102,11 +108,26 @@ function Swap() {
             });
     };
 
+    const handleInputChange = (e, index) => {
+        const { value } = e.target;
+        setNewMessage((prevState) => ({ ...prevState, [index]: value }));
+        console.log(newMessage[index])
+    };
+    const fechaOriginal = cellDate
+    const partes = fechaOriginal.split('-');
+    const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
 
+    const [openSwap, setOpenSwap] = useState(false);
+    const handleClickOpenSwap = () => {
+        setOpenSwap(true);
+    };
+    const handleCloseSwap = () => {
+        setOpenSwap(false);
+    };
     return (
         <div className='profileTodos'>
             <div className='tituloSwap'>
-                <h1>Swaps available</h1>
+                <h1>Swaps available for {fechaFormateada}</h1>
                 <div className='createTituloSwap'>
                     <Link to={`/create`} state={{ dateFrom: cellDate }}>
 
@@ -144,12 +165,12 @@ function Swap() {
                                                     cols="30"
                                                     rows="10"
                                                     placeholder="Write something..."
-                                                    onChange={(e) => setNewMessage(e.target.value)}
-                                                    value={newMessage}
+                                                    onChange={(e) => handleInputChange(e, index)}
+                                                    value={newMessage[index]}
                                                     required
                                                 >
                                                 </textarea>
-                                                <Button variant="contained" className="buttonProfile" style={{ backgroundColor: '#26C3FF', margin: "0px 0px 0px 10px" }} onClick={() => todo(item.userId)}>Send</Button>
+                                                <Button variant="contained" className="buttonProfile" style={{ backgroundColor: '#26C3FF', margin: "0px 0px 0px 10px" }} onClick={() => todo(item.userId, index)}>Send</Button>
                                             </div>
                                             {errorConversation
                                                 ? <div>
@@ -173,8 +194,42 @@ function Swap() {
                                         : <></>}
                             </div>}
                             {item.userId === id2[0]
-                                ?
-                                <Button onClick={() => { deleteSwapFunction(item._id) }} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
+                                ? <>
+
+                                    <Button onClick={handleClickOpenSwap} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
+                                    <Dialog
+                                        open={openSwap}
+                                        onClose={handleCloseSwap}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                    >
+                                        <DialogTitle id="alert-dialog-title">
+                                            {"Delete Swap?"}
+                                        </DialogTitle>
+                                        <DialogContent>
+                                            <div id="alert-dialog-description">
+                                                Once deleted the info will be erased.
+                                            </div>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseSwap} style={{
+                                                position: 'absolute',
+                                                bottom: 8,
+                                                left: 10,
+                                            }}
+                                                color="success"
+                                                variant="contained"
+                                            >Cancel</Button>
+                                            <Button
+                                                onClick={() => deleteSwapFunction(item._id)} endIcon={<TiDelete />}
+                                                //onClick={handleClose}
+                                                autoFocus
+                                                color="error"
+                                                variant="contained">
+                                                Delete
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog></>
                                 : <div></div>}
 
 

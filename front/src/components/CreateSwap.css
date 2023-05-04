@@ -24,6 +24,13 @@
     border-radius: 10px;
 
 }
+.buttonSubmitCreateSwapNote{
+    border-radius: 10px;
+}
+.splitCreateSwap{
+    display: flex;
+    justify-content: space-between;
+}
 @media (max-width: 480px) {
     .datos {
 

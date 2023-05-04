@@ -19,6 +19,18 @@
     margin-top: 5px;
 }
 
+.swapProfileDenied {
+    border: 1px;
+    border-color: black;
+    border-style: solid;
+    color: gray;
+    width: 95%;
+    margin-top: 5px;
+    text-shadow: #e0e0e0 1px 1px 0;
+    padding: 5px;
+    background-color: rgba(128, 128, 128, 0.605);
+}
+
 
 
 .profileTodos {
@@ -35,7 +47,7 @@
 .profileTipo {
     display: flex;
     justify-content: space-between;
-    margin-top:5px;
+    margin-top: 5px;
 
 }
 
@@ -44,7 +56,8 @@
     border-radius: 10px;
 
 }
-.editProfileButton{
+
+.editProfileButton {
     border-radius: 10px;
     margin-bottom: 5px;
 
@@ -66,9 +79,10 @@
     color: white;
     background-color: red;
     border-radius: 10px;
-   
+
 }
+
 a {
     text-decoration: none;
     color: inherit;
-  }
+}
