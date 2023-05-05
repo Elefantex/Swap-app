@@ -9,7 +9,12 @@ import "./swap.css"
 import { TiDelete } from "react-icons/ti"
 import { fetchNotesDate, getNotesDate } from '../app/slices';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+
 
 function Note() {
     const [data, setData] = useState([]);
@@ -63,6 +68,8 @@ function Note() {
         console.log(id)
         await deleteSwap({ id }).unwrap();
         window.location.reload()
+        setOpenSwap(false);
+
     }
     const [nuevo, setNuevo] = useState([])
     useEffect(() => {
@@ -89,10 +96,18 @@ function Note() {
     const partes = fechaOriginal.split('-');
     const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
 
+
+    const [openSwap, setOpenSwap] = useState(false);
+    const handleClickOpenSwap = () => {
+        setOpenSwap(true);
+    };
+    const handleCloseSwap = () => {
+        setOpenSwap(false);
+    };
     return (
         <div className='profileTodos'>
-            <div className='tituloSwap'>
-                <h1>Info about your swasps request {fechaFormateada}</h1>
+            <div className='splitCreateSwap'>
+                <h1>Info about your requests {fechaFormateada}</h1>
                 <div className='createTituloSwap'>
                     <Link to={`/createNote`} state={{ dateFrom: cellDate }}>
 
@@ -139,14 +154,53 @@ function Note() {
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             {item.userId === id2[0]
                                 ? <div
-                                ><button className='buttonDeleteSwap' onClick={() => { deleteSwapFunction(item._id) }}>Delete <TiDelete /></button></div>
+                                >
+                                    <Button onClick={handleClickOpenSwap} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Note</Button>
+                                </div>
                                 : <div></div>}
 
 
                         </div>
+                        <Dialog
+                            open={openSwap}
+                            onClose={handleCloseSwap}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Delete Note?"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <div id="alert-dialog-description">
+                                    Once deleted the info will be erased.
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseSwap} style={{
+                                    position: 'absolute',
+                                    bottom: 8,
+                                    left: 10,
+                                }}
+                                    color="success"
+                                    variant="contained"
+                                >Cancel</Button>
+                                <Button
+                                    onClick={() => deleteSwapFunction(item._id)} endIcon={<TiDelete />}
+                                    //onClick={handleClose}
+                                    autoFocus
+                                    color="error"
+                                    variant="contained">
+                                    Delete
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                 ))
-            }</div> : <div>
+
+            }
+
+
+            </div> : <div>
 
                 <Link to={`/createnote`} state={{ dateFrom: cellDate }}>
 

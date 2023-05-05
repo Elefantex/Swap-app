@@ -78,9 +78,16 @@ th {
 
 }
 
+
+
 .moviles {
     padding-top: 56px;
 }
+.pruebaCalendario{
+    position: absolute;
+    left: 35%;
+}
+
 
 @media (max-width: 480px) {
     .tabla {
@@ -88,6 +95,10 @@ th {
         width: 100%;
         max-width: 361px;
         height: 500px;
+    }
+    .pruebaCalendario{
+        position: absolute;
+        left: 30px;
     }
 
 }
@@ -99,5 +110,9 @@ th {
         max-width: 359;
         height: 500px;
     }
+    .pruebaCalendario{
+    position: absolute;
+    left: 30px;
+}
 
 }

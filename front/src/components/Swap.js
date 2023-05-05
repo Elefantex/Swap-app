@@ -126,14 +126,12 @@ function Swap() {
     };
     return (
         <div className='profileTodos'>
-            <div className='tituloSwap'>
+            <div className='splitCreateSwap'>
                 <h1>Swaps available for {fechaFormateada}</h1>
                 <div className='createTituloSwap'>
                     <Link to={`/create`} state={{ dateFrom: cellDate }}>
-
                         <div>
                             <Button className="buttonDeleteSwap" color="success" variant="contained"> Create Swap</Button>
-
                         </div>
 
                     </Link>

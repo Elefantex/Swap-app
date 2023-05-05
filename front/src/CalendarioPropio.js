@@ -7,6 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { CSSProperties } from "react";
 import PuffLoader from "react-spinners/ClipLoader";
 import { getNotes } from "./app/slices";
+import { BiInfoCircle } from "react-icons/bi"
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Button } from "@mui/material";
 
 
 
@@ -102,13 +108,45 @@ const CalendarioPropio = () => {
       setMes(mes - 1);
     }
   };
+  const [open, setOpen] = useState(false)
+  const handleClose = () => {
+    setOpen(false);
+
+  };
 
 
   const colors = ["#A33421", "#7DA329", "#08A361", "#A3185C", "#7C10A3"];
   return (
     <div className="calendario">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"How this works?"}
+        </DialogTitle>
+        <DialogContent>
+          <div id="alert-dialog-description">
+            This is a calendar where you can add info about the swaps that you have requested to another people.
+            Just press the day and it will go to create a note with some info so you can remember.
+            Whenever you have a note, it will be shown in this calendar with the Crewcode of the one requested.
+            You can access to all your notes in your profile
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}
+            color="success"
+            variant="contained"
+          >Cancel</Button>
+        </DialogActions>
+      </Dialog>
       <div className="mes">
-        <div className="">
+        <div className="pruebaCalendario">
+          <BiInfoCircle size={28} onClick={() => setOpen(true)} />
+        </div>
+        <div className="pruebaCalendarioNoText">
           <button className="botonIzq" onClick={mesAnterior}>
             {"<"}
           </button>
@@ -185,7 +223,6 @@ const CalendarioPropio = () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    
                                     {item.crewcode}
                                   </div>
                                 </Link>

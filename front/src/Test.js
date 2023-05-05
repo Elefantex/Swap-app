@@ -7,6 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { CSSProperties } from "react";
 import PuffLoader from "react-spinners/ClipLoader";
 import { getSwaps } from "./app/slices";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Button } from "@mui/material";
+import { BiInfoCircle } from "react-icons/bi"
+
 
 
 
@@ -148,12 +155,59 @@ const Test = () => {
   const handleSelectRoster = () => {
     setShowRoster(!showRoster);
   };
+  const [open, setOpen] = useState(false)
+  const handleClose = () => {
+    setOpen(false);
 
+  };
 
   return (
     <div className="calendario">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"How this works?"}
+        </DialogTitle>
+        <DialogContent>
+          <div id="alert-dialog-description">
+            This is a calendar where you can see the swaps requested by the people who can swap with you.
+            That means that if you are JU you will see JU and JUPU swaps.If you are JUPU you will see JU,JUPU and PU swaps.
+            If you are PU you will see JUPU and PU swaps.
+            Just press the day and it will show the info about the swaps of that day.
+            If you want to create a swap for a day, go to "Create Swap"
+            <div>
+              In the top you can filter by the roster, if none are selected it will show all rosters.
+            </div>
+            <div>
+              You have a <b>Map Key </b>in the bottom to understand the colours.
+            </div>
+            <div><b>Swap</b> You are asking for someone who wants to take your duty.</div>
+            <div><b>Offer day off</b> You are offering your day off, as you want to fly more.
+            </div>
+            <div><b>Another Reason</b> You want to have a shorter duty or a different one.</div>
+            <div>
+              You can access to all your swaps in your profile
+
+            </div>
+
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}
+            color="success"
+            variant="contained"
+          >Go back</Button>
+        </DialogActions>
+      </Dialog>
       <div className="mes">
-        <div className="">
+        <div className="pruebaCalendario">
+          <BiInfoCircle size={28} onClick={() => setOpen(true)} />
+        </div>
+        <div className="pruebaCalendarioNoText">
           <button className="botonIzq" onClick={mesAnterior}>
             {"<"}
           </button>
@@ -185,7 +239,7 @@ const Test = () => {
           return (
             <>
               <label className="" style={{ margin: "10px" }}><b>{item}</b>
-                <input  className="" type="checkbox" name="roster" id="roster-`${item}`" onChange={filterRoster} value={item} />
+                <input className="" type="checkbox" name="roster" id="roster-`${item}`" onChange={filterRoster} value={item} />
               </label>
             </>
           )

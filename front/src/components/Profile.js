@@ -243,10 +243,10 @@ function Profile() {
                         <Button variant="contained" className="buttonProfile"
                             onClick={() => { setSwaps(true) }}
                             style={{ backgroundColor: '#26C3FF' }}>
-                            Fresh</Button>
+                            New</Button>
                         <Button variant="outlined" className="buttonProfile"
                             onClick={() => { setSwaps(false) }}
-                        >Expired</Button>
+                        >Old</Button>
 
                         <div >
 
@@ -323,11 +323,11 @@ function Profile() {
                     : <>
                         <Button variant="outlined" className="buttonProfile" onClick={() => { setSwaps(true) }}
                         >
-                            Fresh</Button>
+                            New</Button>
                         <Button variant="contained" className="buttonProfile" onClick={() => { setSwaps(false) }}
                             style={{ backgroundColor: '#26C3FF' }}
 
-                        >Expired</Button>
+                        >Old</Button>
 
                         {
                             expiredSwaps.length > 0 ?
@@ -501,7 +501,7 @@ function Profile() {
                     })}
 
                 </div>
-                : <div>2</div>}
+                : <div>No notes created</div>}
 
 
         </>
