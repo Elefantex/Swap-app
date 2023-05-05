@@ -132,14 +132,19 @@ const CalendarioPropio = () => {
             This is a calendar where you can add info about the swaps that you have requested to another people.
             Just press the day and it will go to create a note with some info so you can remember.
             Whenever you have a note, it will be shown in this calendar with the Crewcode of the one requested.
+            <div>
             You can access to all your notes in your profile
+            </div>
+            <div>
+              The denied notes will shown as blotted 
+            </div>
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}
             color="success"
             variant="contained"
-          >Cancel</Button>
+          >Continue</Button>
         </DialogActions>
       </Dialog>
       <div className="mes">
@@ -194,7 +199,7 @@ const CalendarioPropio = () => {
                   const formattedMonth = (mes + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
                   const cellDate = `${anio}-${formattedMonth}-${formattedItem}`;
 
-                  const dataMatchInfo = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id[0] && dataItem.denied !== true)
+                  const dataMatchInfo = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id[0] )
 
                   return (
                     <th key={key + i} className="dia">
@@ -223,7 +228,8 @@ const CalendarioPropio = () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {item.crewcode}
+                                    {item.denied ?<del>{item.crewcode}</del>:<>{item.crewcode}</>}
+                                    
                                   </div>
                                 </Link>
                               </div>

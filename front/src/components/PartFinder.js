@@ -6,6 +6,10 @@ import { fetchUsersInfo } from "../app/slices";
 import { useNavigate } from "react-router-dom";
 import "./partFinder.css"
 import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 function PartFinder() {
@@ -39,7 +43,7 @@ function PartFinder() {
 
     console.log(fetchData)
 
-
+    const [openError, setOpenError] = useState(false)
     const todo = async (receiverId, index) => {
         setErrorConversation(false)
         setSuccesConversation(false)
@@ -54,10 +58,12 @@ function PartFinder() {
                 setNewMessage("")
                 //setIsOpen(false)
                 setSuccesConversation(true)
+                setOpenSwap(true)
             })
             .catch((error) => {
                 console.error(error);
                 setErrorConversation(true)
+                setOpenError(true)
             });
     };
 
@@ -65,6 +71,14 @@ function PartFinder() {
         const { value } = e.target;
         setNewMessage((prevState) => ({ ...prevState, [index]: value }));
         console.log(newMessage[index])
+    };
+
+    const [openSwap, setOpenSwap] = useState(false);
+
+    const handleCloseSwap = () => {
+        setOpenSwap(false);
+        setOpenError(false)
+
     };
 
 
@@ -88,11 +102,14 @@ function PartFinder() {
                                             setNewMessage("")
 
                                         }} >
-                                            <div>{item.crewcode}</div>
+                                            {item._id !== id2[0]
+                                                ? <div>{item.crewcode}</div>
+                                                : <div>{item.crewcode} (Yourself)</div>
+                                            }
                                             <div>Roster: {item.roster}</div>
                                             <div>Rank: {item.rank}</div>
                                         </div>
-                                        
+
                                         {item._id !== id2[0]
                                             ? <div>
 
@@ -100,8 +117,7 @@ function PartFinder() {
                                                     ? <div></div>
                                                     : <div>
                                                         <button onClick={() => {
-                                                            setErrorConversation(false);
-                                                            setSuccesConversation(false);
+                                                            
                                                             setIsOpen(prevState => ({ ...prevState, [index]: !prevState[index] }));
                                                             setNewMessage("")
 
@@ -131,18 +147,38 @@ function PartFinder() {
                                                             <button onClick={() => todo(item._id, index)} className="buttonSendPart"> Send </button>
                                                         </div>
                                                     </div>
-                                                    {errorConversation
-                                                        ? <div><Alert severity="error">
-                                                            <AlertTitle>Warning</AlertTitle>
-                                                            You have already a conversation
-                                                        </Alert></div>
-                                                        : <div></div>}
-                                                    {succesConversation
-                                                        ? <div><Alert severity="success">
-                                                            <AlertTitle>Succcess</AlertTitle>
-                                                            Message sent successfully
-                                                        </Alert></div>
-                                                        : <div></div>}
+                                                    <Dialog
+                                                        open={openSwap}
+                                                        onClose={handleCloseSwap}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                    >
+
+                                                        <DialogContent>
+                                                            <Alert severity="success">
+                                                                <AlertTitle>Succcess</AlertTitle>
+                                                                Message sent successfully
+                                                            </Alert>
+                                                        </DialogContent>
+
+                                                    </Dialog>
+                                                    <Dialog
+                                                        open={openError}
+                                                        onClose={handleCloseSwap}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                    >
+
+                                                        <DialogContent>
+                                                            <Alert severity="error">
+                                                                <AlertTitle>Warning</AlertTitle>
+                                                                You already have a conversation,
+                                                                <div>check it on Messenger</div>
+                                                            </Alert>
+                                                        </DialogContent>
+
+                                                    </Dialog>
+
 
                                                 </>
                                                 : <></>

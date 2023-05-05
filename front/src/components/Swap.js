@@ -57,8 +57,10 @@ function Swap() {
     const deleteSwapFunction = async (id) => {
         console.log(id)
         await deleteSwap({ id }).unwrap();
-        window.location.reload()
+        //window.location.reload()
         setOpenSwap(false);
+        setSelectedSwap(null)
+        setData((prevSwaps) => prevSwaps.filter((swap) => swap._id !== id))
 
     }
     const [nuevo, setNuevo] = useState([])
@@ -100,11 +102,11 @@ function Swap() {
             .then((savedConversation) => {
                 createMessage({ sender: id2[0], text: newMessage[index], conversationId: savedConversation.data._id })
                 setNewMessage("")
-                setSuccesConversation(true)
+                setOpenMessage(true)
             })
             .catch((error) => {
                 console.error(error);
-                setErrorConversation(true)
+                setOpenMessageError(true)
             });
     };
 
@@ -118,11 +120,25 @@ function Swap() {
     const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
 
     const [openSwap, setOpenSwap] = useState(false);
-    const handleClickOpenSwap = () => {
-        setOpenSwap(true);
-    };
+    const [selectedSwap, setSelectedSwap] = useState(null);
+
+    const handleClickOpenSwap = (note) => {
+        setSelectedSwap(note._id);
+    }
     const handleCloseSwap = () => {
         setOpenSwap(false);
+        setSelectedSwap(null)
+
+    };
+
+    const [openMessage, setOpenMessage] = useState(false);
+    const [openMessageError, setOpenMessageError] = useState(false);
+
+
+    const handleCloseMessage = () => {
+        setOpenMessage(false);
+        setOpenMessageError(false)
+
     };
     return (
         <div className='profileTodos'>
@@ -161,7 +177,8 @@ function Swap() {
                                                 <textarea name=""
                                                     id=""
                                                     cols="30"
-                                                    rows="10"
+                                                    style={{ width: "85%", margin: "5px" }}
+                                                    rows="5"
                                                     placeholder="Write something..."
                                                     onChange={(e) => handleInputChange(e, index)}
                                                     value={newMessage[index]}
@@ -170,23 +187,38 @@ function Swap() {
                                                 </textarea>
                                                 <Button variant="contained" className="buttonProfile" style={{ backgroundColor: '#26C3FF', margin: "0px 0px 0px 10px" }} onClick={() => todo(item.userId, index)}>Send</Button>
                                             </div>
-                                            {errorConversation
-                                                ? <div>
+                                            <Dialog
+                                                open={openMessage}
+                                                onClose={handleCloseMessage}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
 
-                                                    <Alert severity="error">
-                                                        <AlertTitle>Warning</AlertTitle>
-                                                        You have already a conversation
-                                                    </Alert>
-                                                </div>
-                                                : <div></div>}
-                                            {succesConversation
-                                                ? <div>
+                                                <DialogContent>
                                                     <Alert severity="success">
                                                         <AlertTitle>Succcess</AlertTitle>
                                                         Message sent successfully
                                                     </Alert>
-                                                </div>
-                                                : <div></div>}
+                                                </DialogContent>
+
+                                            </Dialog>
+                                            <Dialog
+                                                open={openMessageError}
+                                                onClose={handleCloseMessage}
+                                                aria-labelledby="alert-dialog-title"
+                                                aria-describedby="alert-dialog-description"
+                                            >
+
+                                                <DialogContent>
+                                                    <Alert severity="error">
+                                                        <AlertTitle>Warning</AlertTitle>
+                                                        You already have a conversation,
+                                                        <div>check it on Messenger</div>
+                                                    </Alert>
+                                                </DialogContent>
+
+                                            </Dialog>
+                                           
 
                                         </>
                                         : <></>}
@@ -194,9 +226,9 @@ function Swap() {
                             {item.userId === id2[0]
                                 ? <>
 
-                                    <Button onClick={handleClickOpenSwap} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
+                                    <Button onClick={() => handleClickOpenSwap(item)} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Swap</Button>
                                     <Dialog
-                                        open={openSwap}
+                                        open={selectedSwap === item._id}
                                         onClose={handleCloseSwap}
                                         aria-labelledby="alert-dialog-title"
                                         aria-describedby="alert-dialog-description"

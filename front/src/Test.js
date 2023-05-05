@@ -13,6 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
 import { BiInfoCircle } from "react-icons/bi"
+import { TbSquareRoundedNumber1Filled } from "react-icons/tb"
 
 
 
@@ -191,7 +192,6 @@ const Test = () => {
             <div><b>Another Reason</b> You want to have a shorter duty or a different one.</div>
             <div>
               You can access to all your swaps in your profile
-
             </div>
 
           </div>
@@ -200,7 +200,7 @@ const Test = () => {
           <Button onClick={handleClose}
             color="success"
             variant="contained"
-          >Go back</Button>
+          >Continue</Button>
         </DialogActions>
       </Dialog>
       <div className="mes">
@@ -238,7 +238,10 @@ const Test = () => {
         {roster.map((item) => {
           return (
             <>
-              <label className="" style={{ margin: "10px" }}><b>{item}</b>
+              <label className="" style={{ margin: "10px" }}>
+                
+                <b>{item}</b>
+
                 <input className="" type="checkbox" name="roster" id="roster-`${item}`" onChange={filterRoster} value={item} />
               </label>
             </>

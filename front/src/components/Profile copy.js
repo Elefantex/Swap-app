@@ -28,7 +28,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 
 
-function Profile() {
+function Profile2() {
 
     const id = JSON.parse(localStorage.getItem('IDUserLogin'));
     const { data: swapData = [] } = useGetUsersByIdQuery(id)
@@ -46,7 +46,11 @@ function Profile() {
     const [deleteNote] = useDeleteNoteMutation()
     const [freshSwaps, setFreshSwaps] = useState([]);
     const [expiredSwaps, setExpiredSwaps] = useState([]);
+    const [freshNotes, setFreshNotes] = useState([]);
+    const [expiredNotes, setExpiredNotes] = useState([]);
     const [swaps, setSwaps] = useState(true)
+    const [notes, setNotes] = useState(true)
+
     console.log("first")
     const [isLoading, setIsLoading] = useState(false);
     const [updateNoteDenied] = useUpdateNoteDeniedMutation()
@@ -92,8 +96,13 @@ function Profile() {
         // filter the swaps/offers that are not expired
         const fresh = fetchData.filter(item => new Date(item.date) >= now || item.date === new Date().toISOString().slice(0, 10));
         setFreshSwaps(fresh);
+        const expiredNotes = fetchDataNotes.filter(item => new Date(item.date) < now && item.date !== new Date().toISOString().slice(0, 10));
+        setExpiredNotes(expiredNotes);
+        // filter the swaps/offers that are not expired
+        const freshNotes = fetchDataNotes.filter(item => new Date(item.date) >= now || item.date === new Date().toISOString().slice(0, 10));
+        setFreshNotes(freshNotes);
 
-    }, [fetchData]);
+    }, [fetchData, fetchDataNotes]);
 
     const deleteSwapFunction = async (id) => {
         console.log(id)
@@ -197,6 +206,7 @@ function Profile() {
                 <div className="profileTipo">
                     <h2>
                         Welcome: {swapData.crewcode}
+
                     </h2>
 
                     <div className="swapTipoButton">
@@ -254,7 +264,9 @@ function Profile() {
                             {
                                 freshSwaps.length > 0 ?
                                     < div > <b>Swaps / Offer day off:</b>{freshSwaps.map((item) => {
-                                        
+                                        const fechaOriginal = item.date
+                                        const partes = fechaOriginal.split('-');
+                                        const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
                                         return (
                                             <>
                                                 <div className="swapProfile">
@@ -298,8 +310,7 @@ function Profile() {
                                                         </Dialog>
                                                     </div>
                                                     <div className="swapItem">
-                                                        Date: {item.date}
-                                                        
+                                                        Date: {fechaFormateada}
                                                     </div>
                                                     <div className="swapItem">
                                                         Start hour: {item.inicio}
@@ -334,6 +345,9 @@ function Profile() {
                         {
                             expiredSwaps.length > 0 ?
                                 <div><b>Swaps / Offer day off expired:</b>{expiredSwaps.map((item) => {
+                                    const fechaOriginal = item.date
+                                        const partes = fechaOriginal.split('-');
+                                        const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
                                     return (
                                         <>
                                             <div className="swapProfile itemPartfinderDenied">
@@ -380,7 +394,7 @@ function Profile() {
                                                     </Dialog>
                                                 </div>
                                                 <div className="swapItem">
-                                                    Date: {item.date}
+                                                    Date: {fechaFormateada}
                                                 </div>
                                                 <div className="swapItem">
                                                     Start hour: {item.inicio}
@@ -403,6 +417,7 @@ function Profile() {
                 }
 
             </div >
+
             <h1>Created Notes:</h1>
             <PuffLoader
                 color="#000000"
@@ -412,102 +427,269 @@ function Profile() {
                 aria-label="Loading Spinner"
                 data-testid="loader"
             />
-            {fetchDataNotes.length > 0
-                ? <div>
+            {notes
+                ? <>
+                    <Button variant="contained" className="buttonProfile"
+                        onClick={() => { setNotes(true) }}
+                        style={{ backgroundColor: '#26C3FF' }}>
+                        New</Button>
+                    <Button variant="outlined" className="buttonProfile"
+                        onClick={() => { setNotes(false) }}
+                    >Old</Button>
+                    <div>
+                        {freshNotes.length > 0
+                            ? <div>
 
-                    {fetchDataNotes.map((item, index) => {
-                        const today = new Date().toISOString().slice(0, 10);
-                        const className = item.date < today ? "swapProfileDenied" : "swapProfile";
-                        const classExpired = item.date < today ? "EXPIRED" : "";
+                                {freshNotes.map((item, index) => {
+                                    const fechaOriginal = item.date
+                                    const partes = fechaOriginal.split('-');
+                                    const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
+                                    const today = new Date().toISOString().slice(0, 10);
+                                    const className = item.date < today ? "swapProfileDenied" : "swapProfile";
+                                    const classExpired = item.date < today ? "EXPIRED" : "";
+                                    const classDenied = item.denied
+                                    return (
+                                        <>
+                                            <div className={className}>
+                                                <div className="swapTipo">
+                                                    <b>
+                                                        {classDenied
+                                                            ? <del>{item.crewcode} {classExpired}</del>
+                                                            : <>{item.crewcode} {classExpired}</>
+                                                        }
 
-                        return (
-                            <>
-                                <div className={className}>
-                                    <div className="swapTipo">
-                                        <b>{item.crewcode} {classExpired}</b>
+                                                    </b>
 
-                                        <div className="swapTipoButton">
-                                            <Button onClick={() => handleClickOpenNote(item)}
-                                                endIcon={<TiDelete />} className="buttonDeleteSwap" color="error"
-                                                variant="contained"
-                                            >Delete Note</Button>
-                                        </div>
-                                        <Dialog
-                                            open={selectedNote === item._id}
-                                            onClose={handleCloseNote}
-                                            aria-labelledby="alert-dialog-title"
-                                            aria-describedby="alert-dialog-description"
+                                                    <div className="swapTipoButton">
+                                                        <Button onClick={() => handleClickOpenNote(item)}
+                                                            endIcon={<TiDelete />} className="buttonDeleteSwap" color="error"
+                                                            variant="contained"
+                                                        >Delete Note</Button>
+                                                    </div>
+                                                    <Dialog
+                                                        open={selectedNote === item._id}
+                                                        onClose={handleCloseNote}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
 
-                                        >
-                                            <DialogTitle id="alert-dialog-title">
-                                                {"Delete Note?"}
-                                            </DialogTitle>
-                                            <DialogContent>
-                                                <div id="alert-dialog-description">
-                                                    Once deleted the info will be erased.
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {"Delete Note?"}
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <div id="alert-dialog-description">
+                                                                Once deleted the info will be erased.
+                                                            </div>
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button onClick={handleCloseNote} style={{
+                                                                position: 'absolute',
+                                                                bottom: 8,
+                                                                left: 10,
+                                                            }}
+                                                                color="success"
+                                                                variant="contained"
+                                                            >Cancel</Button>
+                                                            <Button
+                                                                onClick={() => deleteNoteFunction(item._id)} endIcon={<TiDelete />}
+                                                                //onClick={handleClose}
+                                                                autoFocus
+                                                                color="error"
+                                                                variant="contained">
+                                                                Delete
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>
                                                 </div>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleCloseNote} style={{
-                                                    position: 'absolute',
-                                                    bottom: 8,
-                                                    left: 10,
+                                                <div className="swapItem">
+                                                    {classDenied
+                                                        ? <del>Date: {fechaFormateada}</del>
+                                                        : <>Date: {fechaFormateada}</>
+                                                    }
+                                                </div>
+                                                <div className="swapItem">
+                                                    {classDenied
+                                                        ? <del>Start hour: {item.inicio}</del>
+                                                        : <>Start hour: {item.inicio}</>
+                                                    }
+
+                                                </div>
+                                                <div className="swapItem">
+                                                    {classDenied
+                                                        ? <del>End hour: {item.fin}</del>
+                                                        : <>End hour: {item.fin}</>
+                                                    }
+
+                                                </div>
+                                                <div className="swapItem">
+                                                    {classDenied
+                                                        ? <del>Info: {item.razon}</del>
+                                                        : <>Info: {item.razon}</>
+                                                    }
+
+                                                </div>
+                                                <div className="swapItem">
+                                                    Requested: <input style={{
+                                                        marginRight: "30px"
+                                                    }}
+                                                        type="checkbox"
+                                                        checked={item.requested}
+                                                        defaultChecked={item.requested}
+                                                        onChange={(e) => cambiosCheckRequired(e, item._id, item.requested)}
+                                                    />
+
+                                                    Denied: <input
+                                                        type="checkbox"
+                                                        checked={item.denied}
+                                                        defaultChecked={item.denied}
+                                                        onChange={(e) => cambiosCheckDenied(e, item._id, item.denied)}
+                                                    />
+
+                                                </div>
+                                            </div >
+                                        </>
+                                    )
+                                })}
+
+
+                            </div>
+                            : <div>No notes</div>}
+                    </div>
+                </>
+
+                : <>
+
+                    <Button variant="outlined" className="buttonProfile"
+                        onClick={() => { setNotes(true) }}
+                    >
+                        New</Button>
+                    <Button variant="contained" className="buttonProfile"
+                        onClick={() => { setNotes(false) }}
+                        style={{ backgroundColor: '#26C3FF' }}
+                    >Old</Button>
+                    {expiredNotes.length > 0
+                        ? <div>
+
+                            {expiredNotes.map((item, index) => {
+                                const fechaOriginal = item.date
+                                const partes = fechaOriginal.split('-');
+                                const fechaFormateada = partes[2] + '-' + partes[1] + '-' + partes[0];
+                                const today = new Date().toISOString().slice(0, 10);
+                                const className = item.date < today ? "swapProfileDenied" : "swapProfile";
+                                const classExpired = item.date < today ? "EXPIRED" : "";
+                                const classDenied = item.denied
+
+                                return (
+                                    <>
+                                        <div className={className}>
+                                            <div className="swapTipo">
+                                                <b>
+                                                    {classDenied
+                                                        ? <del>{item.crewcode} {classExpired}</del>
+                                                        : <>{item.crewcode} {classExpired}</>
+                                                    }</b>
+
+                                                <div className="swapTipoButton">
+                                                    <Button onClick={() => handleClickOpenNote(item)}
+                                                        endIcon={<TiDelete />} className="buttonDeleteSwap" color="error"
+                                                        variant="contained"
+                                                    >Delete Note</Button>
+                                                </div>
+                                                <Dialog
+                                                    open={selectedNote === item._id}
+                                                    onClose={handleCloseNote}
+                                                    aria-labelledby="alert-dialog-title"
+                                                    aria-describedby="alert-dialog-description"
+
+                                                >
+                                                    <DialogTitle id="alert-dialog-title">
+                                                        {"Delete Note?"}
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                        <div id="alert-dialog-description">
+                                                            Once deleted the info will be erased.
+                                                        </div>
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                        <Button onClick={handleCloseNote} style={{
+                                                            position: 'absolute',
+                                                            bottom: 8,
+                                                            left: 10,
+                                                        }}
+                                                            color="success"
+                                                            variant="contained"
+                                                        >Cancel</Button>
+                                                        <Button
+                                                            onClick={() => deleteNoteFunction(item._id)} endIcon={<TiDelete />}
+                                                            //onClick={handleClose}
+                                                            autoFocus
+                                                            color="error"
+                                                            variant="contained">
+                                                            Delete
+                                                        </Button>
+                                                    </DialogActions>
+                                                </Dialog>
+                                            </div>
+                                            <div className="swapItem">
+                                                {classDenied
+                                                    ? <del>Date: {fechaFormateada}</del>
+                                                    : <>Date: {fechaFormateada}</>
+                                                }
+                                            </div>
+                                            <div className="swapItem">
+                                                {classDenied
+                                                    ? <del>Start hour: {item.inicio}</del>
+                                                    : <>Start hour: {item.inicio}</>
+                                                }
+
+                                            </div>
+                                            <div className="swapItem">
+                                                {classDenied
+                                                    ? <del>End hour: {item.fin}</del>
+                                                    : <>End hour: {item.fin}</>
+                                                }
+
+                                            </div>
+                                            <div className="swapItem">
+                                                {classDenied
+                                                    ? <del>Info: {item.razon}</del>
+                                                    : <>Info: {item.razon}</>
+                                                }
+
+                                            </div>
+                                            <div className="swapItem">
+                                                Requested: <input style={{
+                                                    marginRight: "30px"
                                                 }}
-                                                    color="success"
-                                                    variant="contained"
-                                                >Cancel</Button>
-                                                <Button
-                                                    onClick={() => deleteNoteFunction(item._id)} endIcon={<TiDelete />}
-                                                    //onClick={handleClose}
-                                                    autoFocus
-                                                    color="error"
-                                                    variant="contained">
-                                                    Delete
-                                                </Button>
-                                            </DialogActions>
-                                        </Dialog>
-                                    </div>
-                                    <div className="swapItem">
-                                        Date: {item.date}
-                                    </div>
-                                    <div className="swapItem">
-                                        Start hour: {item.inicio}
-                                    </div>
-                                    <div className="swapItem">
-                                        End hour: {item.fin}
-                                    </div>
-                                    <div className="swapItem">
-                                        Info: {item.razon}
-                                    </div>
-                                    <div className="swapItem">
-                                        Requested: <input style={{
-                                            marginRight: "30px"
-                                        }}
-                                            type="checkbox"
-                                            checked={item.requested}
-                                            defaultChecked={item.requested}
-                                            onChange={(e) => cambiosCheckRequired(e, item._id, item.requested)}
-                                        />
+                                                    type="checkbox"
+                                                    checked={item.requested}
+                                                    defaultChecked={item.requested}
+                                                    onChange={(e) => cambiosCheckRequired(e, item._id, item.requested)}
+                                                />
 
-                                        Denied: <input
-                                            type="checkbox"
-                                            checked={item.denied}
-                                            defaultChecked={item.denied}
-                                            onChange={(e) => cambiosCheckDenied(e, item._id, item.denied)}
-                                        />
+                                                Denied: <input
+                                                    type="checkbox"
+                                                    checked={item.denied}
+                                                    defaultChecked={item.denied}
+                                                    onChange={(e) => cambiosCheckDenied(e, item._id, item.denied)}
+                                                />
 
-                                    </div>
-                                </div >
-                            </>
-                        )
-                    })}
+                                            </div>
+                                        </div >
+                                    </>
+                                )
+                            })}
 
-                </div>
-                : <div>No notes created</div>}
+
+                        </div>
+                        : <div>No old notes</div>}
+                </>}
+
+
 
 
         </>
     )
 }
 
-export default Profile
+export default Profile2

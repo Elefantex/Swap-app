@@ -17,6 +17,7 @@ import Report from './components/Report';
 import CalendarioPropio from './CalendarioPropio';
 import InfoNote from './components/InfoNote';
 import HomeScreen from './HomeSceen';
+import Profile2 from './components/Profile copy';
 
 function App() {
     return (
@@ -34,6 +35,8 @@ function App() {
                     <Route path="/note/:cellDate" element={<InfoNote />} />
                     <Route path="/" element={<CreateUser />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/profile2" element={<Profile2 />} />
+
                     <Route path='/profile/:id' element={<EditProfile />} />
                     <Route path="/messenger" element={<Messenger />} />
                     <Route path="/part" element={<PartFinder />} />

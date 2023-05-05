@@ -67,8 +67,11 @@ function Note() {
     const deleteSwapFunction = async (id) => {
         console.log(id)
         await deleteSwap({ id }).unwrap();
-        window.location.reload()
+        //window.location.reload()
         setOpenSwap(false);
+        setSelectedSwap(null)
+        setData((prevSwaps) => prevSwaps.filter((swap) => swap._id !== id))
+        
 
     }
     const [nuevo, setNuevo] = useState([])
@@ -98,11 +101,18 @@ function Note() {
 
 
     const [openSwap, setOpenSwap] = useState(false);
-    const handleClickOpenSwap = () => {
+    const [selectedSwap, setSelectedSwap] = useState(null);
+
+    const handleClickOpenSwap = (note) => {
+        setSelectedSwap(note._id);
+    }
+    const handleClickOpenSwapReal = () => {
+        
         setOpenSwap(true);
     };
     const handleCloseSwap = () => {
         setOpenSwap(false);
+        setSelectedSwap(null)
     };
     return (
         <div className='profileTodos'>
@@ -155,14 +165,15 @@ function Note() {
                             {item.userId === id2[0]
                                 ? <div
                                 >
-                                    <Button onClick={handleClickOpenSwap} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Note</Button>
+                                    <Button onClick={()=>handleClickOpenSwap(item)} endIcon={<TiDelete />} className="buttonDeleteSwap" color="error" variant="contained"> Delete Note</Button>
                                 </div>
                                 : <div></div>}
 
 
                         </div>
+
                         <Dialog
-                            open={openSwap}
+                            open={selectedSwap ===item._id}
                             onClose={handleCloseSwap}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"

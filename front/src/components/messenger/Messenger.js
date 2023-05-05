@@ -12,6 +12,13 @@ import { io } from "socket.io-client"
 import { useDeleteConversationMutation } from "../../app/apiSlice";
 import { fetchConversation } from "../../app/slices";
 import { useNavigate } from "react-router-dom";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Button } from "@mui/material";
+import { TiDelete } from 'react-icons/ti';
+
 
 import "./Messenger.css"
 
@@ -147,6 +154,18 @@ function Messenger() {
             handleSubmit(e)
         }
     };
+    const [openSwap, setOpenSwap] = useState(false);
+    const [selectedSwap, setSelectedSwap] = useState(null);
+
+    const handleCloseSwap = () => {
+        setOpenSwap(false);
+        setSelectedSwap(null)
+
+
+    };
+    const handleClickOpenSwap = (note) => {
+        setSelectedSwap(note);
+    }
 
 
 
@@ -196,7 +215,44 @@ function Messenger() {
                                 currentChat
                                     ? <>
                                         {currentChat ?
-                                            <div><button onClick={() => { deleteConversationChat(currentChat?._id) }} className="deleteConversation">Delete conversation</button>
+                                            <div>
+                                                <Button onClick={() => { handleClickOpenSwap(currentChat?._id) }} className="deleteConversation"
+
+                                                    color="error"
+                                                    variant="contained">Delete conversation</Button>
+                                                <Dialog
+                                                    open={selectedSwap === currentChat._id}
+                                                    onClose={handleCloseSwap}
+                                                    aria-labelledby="alert-dialog-title"
+                                                    aria-describedby="alert-dialog-description"
+                                                >
+                                                    <DialogTitle id="alert-dialog-title">
+                                                        {"Delete Conversation?"}
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                        <div id="alert-dialog-description">
+                                                            Once deleted the info will be erased.
+                                                        </div>
+                                                    </DialogContent>
+                                                    <DialogActions>
+                                                        <Button onClick={handleCloseSwap} style={{
+                                                            position: 'absolute',
+                                                            bottom: 8,
+                                                            left: 10,
+                                                        }}
+                                                            color="success"
+                                                            variant="contained"
+                                                        >Cancel</Button>
+                                                        <Button
+                                                            onClick={() => deleteConversationChat(currentChat?._id)} endIcon={<TiDelete />}
+                                                            //onClick={handleClose}
+                                                            autoFocus
+                                                            color="error"
+                                                            variant="contained">
+                                                            Delete
+                                                        </Button>
+                                                    </DialogActions>
+                                                </Dialog>
                                             </div>
                                             : <div></div>
                                         }
