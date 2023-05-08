@@ -148,6 +148,8 @@ const CreateUser = () => {
 
     const loginDatabase = () => {
         setIsLoading(true)
+        setDifferentLogin(true)
+
 
         dispatch(fetchUsersLogin({ crewcode: crewcodeLogin, password: passwordLogin }))
             .then((response) => {
@@ -628,12 +630,7 @@ const CreateUser = () => {
 
                             </div>
                             : <div></div>}
-                        {differentLogin ? <div></div> : <div>
-                            <Alert severity="error">
-                                <AlertTitle>Error</AlertTitle>
-                                Incorrect Crewcode/password
-                            </Alert>
-                        </div>}
+                        
                         {succes
                             ? <div>
                                 <Alert severity="error">
@@ -692,7 +689,8 @@ const CreateUser = () => {
                     <DialogContent>
                         {differentLogin ?
                             <div id="alert-dialog-description">
-                                Loading...</div> : <div id="alert-dialog-description">
+                                Loading...</div> 
+                                : <div id="alert-dialog-description">
                                 <Alert severity="error">
                                     <AlertTitle>Error</AlertTitle>
                                     Incorrect Crewcode/password
