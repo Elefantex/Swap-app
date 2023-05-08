@@ -2,10 +2,10 @@ const mongoose = require("mongoose")
 
 require('dotenv').config();
 
-const URI = "mongodb+srv://admin:samuel@cluster0.xgq4q0o.mongodb.net/?retryWrites=true&w=majority"
+const MONGODB_URI = process.env.MONGODB_URI;
 
 
-mongoose.connect(URI, {
+mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
   
 

@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const apiUrl = process.env.API_URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
+    baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
     tagTypes: ['Users'],
     endpoints: builder => ({
         getUsers: builder.query({

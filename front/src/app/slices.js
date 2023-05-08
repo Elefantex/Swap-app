@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 
 export const getSwaps = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/swaps`);
+        const response = await axios.get(`${API_BASE_URL}/swaps`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -12,7 +14,7 @@ export const getSwaps = async () => {
 };
 export const getNotes = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/notes`);
+        const response = await axios.get(`${API_BASE_URL}/notes`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -22,7 +24,7 @@ export const getNotes = async () => {
 
 export const getUsers = async () => {
     try {
-        const response = await axios.get(`http://localhost3001/users`);
+        const response = await axios.get(`${API_BASE_URL}/users`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -36,7 +38,7 @@ export const fetchUsersInfo = createAsyncThunk("users/getUsers", async () => {
 
 export const getUsersLogin = async ({ crewcode, password }) => {
     try {
-        const response = await axios.post(`http://localhost:3001/users/login`, { crewcode, password });
+        const response = await axios.post(`${API_BASE_URL}/users/login`, { crewcode, password });
         return response.data;
     } catch (error) {
         console.error(error);
@@ -49,7 +51,7 @@ export const fetchUsersLogin = createAsyncThunk("users/getUsersLogin", async ({ 
 });
 export const getUsersLoginRecover = async ({ crewcode,rank,email }) => {
     try {
-        const response = await axios.post(`http://localhost:3001/users/loginRecover`, { crewcode,rank,email });
+        const response = await axios.post(`${API_BASE_URL}/users/loginRecover`, { crewcode,rank,email });
         return response.data;
     } catch (error) {
         console.error(error);
@@ -62,7 +64,7 @@ export const fetchUsersLoginRecover = createAsyncThunk("users/getUsersLoginRecov
 });
 export const getPasswordChangeCreate = async ({ _id,password}) => {
     try {
-        const response = await axios.post(`http://localhost:3001/users/recoverPassword`, { _id,password});
+        const response = await axios.post(`${API_BASE_URL}/users/recoverPassword`, { _id,password});
         return response.data;
     } catch (error) {
         console.error(error);
@@ -79,7 +81,7 @@ export const fetchPasswordChangeCreate= createAsyncThunk("users/getPasswordChang
 
 export const getSwapsId = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3001/swaps/${id}}`);
+        const response = await axios.get(`${API_BASE_URL}/swaps/${id}}`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -93,7 +95,7 @@ export const fetchSwapsId = createAsyncThunk("swaps/getSwapsId", async (id) => {
 
 export const getSwapsDate = async (date) => {
     try {
-        const response = await axios.get(`http://localhost:3001/swaps/${date}`);
+        const response = await axios.get(`${API_BASE_URL}/swaps/${date}`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -106,7 +108,7 @@ export const fetchSwapsDate = createAsyncThunk("swaps/getSwapsDate", async (date
 });
 export const getNotesDate = async (date) => {
     try {
-        const response = await axios.get(`http://localhost:3001/notes/${date}`);
+        const response = await axios.get(`${API_BASE_URL}/notes/${date}`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -123,7 +125,7 @@ export const fetchNotesDate = createAsyncThunk("notes/getNotesDate", async (date
 
 export const getConversation = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3001/conversations/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/conversations/${id}`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -140,7 +142,7 @@ export const fetchConversation = createAsyncThunk("conversations/getConversation
 
 export const createUSer = async (userData) => {
     try {
-        const response = await axios.post(`http://localhost:3001/users`, userData);
+        const response = await axios.post(`${API_BASE_URL}/users`, userData);
         return response.data;
     } catch (error) {
         if (error.response && error.response.status >= 400 && error.response.status < 500) {
@@ -158,7 +160,7 @@ export const fetchUsers = createAsyncThunk("users/createUSer", async () => {
 
 export const getInfoCrewcode = async (crewcode) => {
     try {
-        const response = await axios.get(`http://localhost:3001/users?crewcode=${crewcode}`);
+        const response = await axios.get(`${API_BASE_URL}/users?crewcode=${crewcode}`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -172,7 +174,7 @@ export const fetchInfoCrewcode = createAsyncThunk("users/getInfoCrewcode", async
 
 export const createRequestSlice = async () => {
     try {
-        const response = await axios.post(`http://localhost:3001/request`);
+        const response = await axios.post(`${API_BASE_URL}/request`);
         return response.data;
     } catch (error) {
         console.error(error);
