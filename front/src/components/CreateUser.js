@@ -18,6 +18,7 @@ import PuffLoader from "react-spinners/ClipLoader";
 
 
 
+
 const CreateUser = () => {
     const id = localStorage.getItem("IDUserLogin")
 
@@ -174,13 +175,13 @@ const CreateUser = () => {
                 } catch (error) {
                     setDifferentLogin(false);
                     console.log("Error not found");
-                    setIsLoading(false);
+                    setIsLoading(true);
 
                 }
             })
             .catch((error) => {
                 setDifferentLogin(false);
-                setIsLoading(false);
+                setIsLoading(true);
                 console.log("Nada encontrado");
             });
     };
@@ -233,7 +234,7 @@ const CreateUser = () => {
                 setEditPasswordSucces(false)
                 setTimeout(() => {
                     setOpenEditPasswordSucces(false)
-                }, 3000);
+                }, 2000);
             }
             catch (err) {
                 console.error(err);
@@ -307,6 +308,12 @@ const CreateUser = () => {
 
     }
     let [color, setColor] = useState("#000000");
+    const handleCloseSwap = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            setIsLoading(false)
+        }
+
+    };
 
 
     return (
@@ -470,14 +477,7 @@ const CreateUser = () => {
 
                             >Login </Button>
                             <Button variant="outlined" className="buttonProfile" onClick={changeRegistro}>Register</Button>
-                            <PuffLoader
-                                color={color}
-                                loading={isLoading}
-                                size={30}
-                                speedMultiplier="0.8"
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
+
 
                             <div>
                                 <InputLabel >Crewcode:</InputLabel>
@@ -670,9 +670,53 @@ const CreateUser = () => {
 
                     </DialogActions>
                 </Dialog>
+                <Dialog
+                    disableEscapeKeyDown
+
+                    open={isLoading}
+                    onClose={handleCloseSwap}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Loading..."}
+                        <PuffLoader
+                            color="#000000"
+                            loading="true"
+                            size={30}
+                            speedMultiplier="0.8"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </DialogTitle>
+                    <DialogContent>
+                        {differentLogin ?
+                            <div id="alert-dialog-description">
+                                Loading...</div> : <div id="alert-dialog-description">
+                                <Alert severity="error">
+                                    <AlertTitle>Error</AlertTitle>
+                                    Incorrect Crewcode/password
+                                </Alert>
+                                <div style={{ display: "flex",justifyContent:"center",alignItems:"center" }}>
+                                    <Button onClick={handleCloseSwap}
+                                        autoFocus
+                                        color="error"
+                                        variant="contained" style={{
+                                            marginTop: '10px',
+                                        }}
+                                    >
+                                        Oki
+                                    </Button>
+                                </div>
+
+                            </div>}
+
+                    </DialogContent>
+
+                </Dialog>
             </div>
 
-        </div>
+        </div >
 
     );
 };
