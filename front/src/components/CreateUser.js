@@ -300,7 +300,7 @@ const CreateUser = () => {
                                 <InputLabel >Crewcode:</InputLabel>
                             </div>
                             <TextField id="outlined-basic" variant="outlined"
-                                inputProps={{ maxLength: 6, minLength: 6 }}
+                                inputProps={{ maxLength: 6 }}
                                 type="text"
                                 value={crewcode}
                                 placeholder="Crewcode"
@@ -436,13 +436,13 @@ const CreateUser = () => {
 
                             </div>
                             <TextField id="outlined-basic" variant="outlined"
-                                inputProps={{ maxLength: 6, minLength: 6 }}
+                                inputProps={{ maxLength: 6}}
                                 type="text"
                                 value={crewcodeLogin}
                                 placeholder="Crewcode"
                                 onChange={handleInputChange2}
                                 maxLength="6"
-                                minLength="6"
+                                
                                 required
                             />
                         </div>
@@ -482,7 +482,7 @@ const CreateUser = () => {
                                     <InputLabel >CrewCode:</InputLabel>
                                 </div>
                                 <TextField id="outlined-basic" variant="outlined"
-                                    inputProps={{ maxLength: 6, minLength: 6 }}
+                                    inputProps={{ maxLength: 6}}
                                     type="text"
                                     value={crewcodeRecover}
                                     placeholder="Crewcode"
@@ -509,7 +509,7 @@ const CreateUser = () => {
                                 <TextField id="outlined-basic" variant="outlined"
                                     type="text"
                                     value={emailRecover}
-                                    inputProps={{ type: "text" }}
+                                    inputProps={{ type: "email" }}
                                     placeholder="Email"
                                     onChange={(e) => setEmailRecover(e.target.value)}
                                     error={errorRecover ? true : false}
