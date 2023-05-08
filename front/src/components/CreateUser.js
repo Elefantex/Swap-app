@@ -38,6 +38,8 @@ const CreateUser = () => {
     //const [createUser] = useCreateUserMutation();
 
     const [succes, setSucces] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+
 
 
     const [recoverSucces, setRecoverSucces] = useState(false)
@@ -80,10 +82,19 @@ const CreateUser = () => {
             navigate("/home")
         }
     }, [])
-
+    const [invalidEmail, setInvalidEmail] = useState(false)
     const addUser = async (e) => {
         e.preventDefault();
-
+        setErrorRegister(false)
+        setDifferentPassword(false)
+        setFailCrewcode(false)
+        setInvalidEmail(false)
+        const emailRegex = /^\S+@\S+\.\S+$/;
+        if (!emailRegex.test(email)) {
+            setInvalidEmail(true)
+            console.log("Invalid email address");
+            return;
+        }
         if (password !== password2) {
             console.log("Password does not match")
             setDifferentPassword(true)
@@ -94,6 +105,10 @@ const CreateUser = () => {
         } else if (roster > 16 || roster < 1) {
             console.log("first Update")
             setFailRoster(true)
+            return
+        }
+        else if (password.length < 6 || password2.length < 6) {
+            setErrorRegister(true)
             return
         }
         else {
@@ -134,6 +149,9 @@ const CreateUser = () => {
         dispatch(fetchUsersLogin({ crewcode: crewcodeLogin, password: passwordLogin }))
             .then((response) => {
                 try {
+                    setIsLoading(true)
+                    console.log("etIsLoading(true)")
+
                     const userFilter = response.payload.user;
                     if (userFilter.password === passwordLogin) {
                         setDifferentLogin(true);
@@ -155,10 +173,13 @@ const CreateUser = () => {
                 } catch (error) {
                     setDifferentLogin(false);
                     console.log("Error not found");
+                    setIsLoading(false);
+
                 }
             })
             .catch((error) => {
                 setDifferentLogin(false);
+                setIsLoading(false);
                 console.log("Nada encontrado");
             });
     };
@@ -258,6 +279,8 @@ const CreateUser = () => {
         setErrorRegister(false)
         setDifferentPassword(false)
         setDifferentLogin(true)
+        setInvalidEmail(false)
+
 
     }
     const changeLogin = () => {
@@ -279,7 +302,11 @@ const CreateUser = () => {
         setErrorRegister(false)
         setDifferentPassword(false)
         setDifferentLogin(true)
+        setInvalidEmail(false)
+
     }
+    let [color, setColor] = useState("#000000");
+
 
     return (
 
@@ -306,7 +333,7 @@ const CreateUser = () => {
                                 placeholder="Crewcode"
                                 onChange={handleInputChange}
                                 maxLength="6"
-                               
+
                                 error={crewcode.length !== 6 && crewcode.length !== 0 ? true : false}
                                 helperText={crewcode.length !== 6 && crewcode.length !== 0 ? "Has to be 6 characters" : ""}
                                 required
@@ -322,6 +349,12 @@ const CreateUser = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 inputProps={{ type: "email" }}
                                 type="email"
+                                error={invalidEmail}
+                                helperText={
+                                    invalidEmail
+                                        ? "This is not an email"
+                                        : ""
+                                }
                             />
 
                             <div>
@@ -363,7 +396,7 @@ const CreateUser = () => {
                                     inputProps={{
                                         minLength: 6,
                                     }}
-                                    required
+
                                 />
                                 <Button onClick={switchShown2} variant="text" style={{ margin: "10px 0px 0px 10px" }}>Show</Button>
 
@@ -389,6 +422,13 @@ const CreateUser = () => {
                                     inputProps={{ max: 16, min: 1 }}
                                     onChange={(e) => setRoster(e.target.value)}
                                     value={roster}
+                                    error={roster > 16 || roster < 1}
+
+                                    helperText={
+                                        roster > 16 || roster < 1
+                                            ? "Roster has to be between 1 and 16"
+                                            : ""
+                                    }
                                     label="Roster"
                                 />
 
@@ -428,21 +468,28 @@ const CreateUser = () => {
                                 style={{ backgroundColor: '#26C3FF' }}
 
                             >Login </Button>
-                            <Button variant="outlined" className="buttonProfile" onClick={changeRegistro}>Register </Button>
-
+                            <Button variant="outlined" className="buttonProfile" onClick={changeRegistro}>Register</Button>
+                            <PuffLoader
+                                color={color}
+                                loading={isLoading}
+                                size={30}
+                                speedMultiplier="0.8"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
 
                             <div>
                                 <InputLabel >Crewcode:</InputLabel>
 
                             </div>
                             <TextField id="outlined-basic" variant="outlined"
-                                inputProps={{ maxLength: 6}}
+                                inputProps={{ maxLength: 6 }}
                                 type="text"
                                 value={crewcodeLogin}
                                 placeholder="Crewcode"
                                 onChange={handleInputChange2}
                                 maxLength="6"
-                                
+
                                 required
                             />
                         </div>
@@ -482,13 +529,13 @@ const CreateUser = () => {
                                     <InputLabel >CrewCode:</InputLabel>
                                 </div>
                                 <TextField id="outlined-basic" variant="outlined"
-                                    inputProps={{ maxLength: 6}}
+                                    inputProps={{ maxLength: 6 }}
                                     type="text"
                                     value={crewcodeRecover}
                                     placeholder="Crewcode"
                                     onChange={handleInputChange3}
                                     maxLength="6"
-                                    
+
                                     required
                                 />
                                 <div>
