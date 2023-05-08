@@ -306,7 +306,7 @@ const CreateUser = () => {
                                 placeholder="Crewcode"
                                 onChange={handleInputChange}
                                 maxLength="6"
-                                minLength="6"
+                               
                                 error={crewcode.length !== 6 && crewcode.length !== 0 ? true : false}
                                 helperText={crewcode.length !== 6 && crewcode.length !== 0 ? "Has to be 6 characters" : ""}
                                 required
@@ -488,7 +488,7 @@ const CreateUser = () => {
                                     placeholder="Crewcode"
                                     onChange={handleInputChange3}
                                     maxLength="6"
-                                    minLength="6"
+                                    
                                     required
                                 />
                                 <div>
