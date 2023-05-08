@@ -146,10 +146,11 @@ const CreateUser = () => {
     }, [roster])
 
     const loginDatabase = () => {
+        setIsLoading(true)
+
         dispatch(fetchUsersLogin({ crewcode: crewcodeLogin, password: passwordLogin }))
             .then((response) => {
                 try {
-                    setIsLoading(true)
                     console.log("etIsLoading(true)")
 
                     const userFilter = response.payload.user;
