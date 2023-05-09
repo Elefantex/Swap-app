@@ -470,7 +470,7 @@ const CreateUser = () => {
                             <DialogTitle id="alert-dialog-title">
 
                                 {errorRegister ? <div>{"Register error"} </div>
-                                    : <div>{"Loading..."}<PuffLoader
+                                    : <div>{"Creating User..."}<PuffLoader
                                         color="#000000"
                                         loading="true"
                                         size={30}
