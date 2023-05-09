@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useGetUsersByIdQuery } from "../../app/apiSlice";
 
 function Conversation({ conversation, currentUser }) {
 
 
-    console.log(conversation)
-    console.log(currentUser)
+    //console.log(conversation)
+    //console.log(currentUser)
 
     const friendId = conversation.members.find(m => m !== currentUser)
-    console.log(friendId)
+    //console.log(friendId)
 
     const { data: data = [] } = useGetUsersByIdQuery(friendId)
-    console.log(data)
+   // console.log(data)
 
   
 

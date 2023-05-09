@@ -1,15 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios'
-import { useCreateNoteMutation, useCreateSwapMutation, useGetUsersByIdQuery } from '../app/apiSlice';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import "./CreateSwap.css"
-import { useLocation } from 'react-router-dom'
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle, FormHelperText } from "@mui/material";
-import { AiOutlineSend, AiOutlineCalendar } from "react-icons/ai"
+import { Button, InputLabel, TextField } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { AiOutlineCalendar, AiOutlineSend } from "react-icons/ai";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useCreateNoteMutation, useGetUsersByIdQuery } from '../app/apiSlice';
+import "./CreateSwap.css";
 
 
 function CreatNote() {
@@ -33,7 +27,7 @@ function CreatNote() {
     const [inicio, setInicio] = useState("")
     const [fin, setFin] = useState("")
     const [razon, setRazon] = useState("")
-    const [tipoSwap, setTipoSwap] = useState("")
+    
     const rank = localStorage.getItem('Rank');
 
 
@@ -60,8 +54,8 @@ function CreatNote() {
 
 
     }
-    console.log(id)
-    console.log(swapData.roster)
+    //console.log(id)
+    //console.log(swapData.roster)
     return (<>
         <div className='todoCreateSwapCaja'>
             <div className='datos'>

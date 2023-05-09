@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate, NavLink } from "react-router-dom";
-import axios from "axios";
-import { fetchUsersLogin, fetchUsersLoginRecover } from "../app/slices";
-import { useUpdateUserPasswordMutation } from "../app/apiSlice";
-import "./CreateUser.css"
-import { createUSer } from "../app/slices";
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
-import { getUsersLoginRecover, getPasswordChangeCreate } from "../app/slices";
+import { Alert, AlertTitle, Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 import PuffLoader from "react-spinners/ClipLoader";
+import { useUpdateUserPasswordMutation } from "../app/apiSlice";
+import { createUSer, fetchUsersLogin, getPasswordChangeCreate, getUsersLoginRecover } from "../app/slices";
+import "./CreateUser.css";
 
 
 
@@ -57,7 +54,7 @@ const CreateUser = () => {
     const [rankRecover, setTipoRankRecover] = useState("")
 
     const [failCrewcode, setFailCrewcode] = useState(false)
-    const RankUser = localStorage.getItem('IDUserLogin');
+    
 
     const [email, setEmail] = useState("")
     const [emailRecover, setEmailRecover] = useState("")
@@ -133,7 +130,7 @@ const CreateUser = () => {
                 setErrorRegister(true)
 
                 console.log("error en user")
-                console.log(err);
+                //console.log(err);
                 setFailCrewcode(true);
                 setRegistro(true);
             }
@@ -158,13 +155,13 @@ const CreateUser = () => {
         dispatch(fetchUsersLogin({ crewcode: crewcodeLogin, password: passwordLogin }))
             .then((response) => {
                 try {
-                    console.log("etIsLoading(true)")
+                    
 
                     const userFilter = response.payload.user;
                     if (userFilter.password === passwordLogin) {
                         setDifferentLogin(true);
-                        console.log("Encontrado usuario y todo");
-                        console.log(userFilter._id);
+                        //console.log("Encontrado usuario y todo");
+                        //console.log(userFilter._id);
                         const storeIdLocalStorage = [userFilter._id];
                         const storeRankLocalStorage = userFilter.rank;
                         const storeRosterLocalStorage = userFilter.roster;
@@ -176,11 +173,11 @@ const CreateUser = () => {
                         navigate("/home");
                     } else {
                         setDifferentLogin(false);
-                        console.log("password no encontrada");
+                        //console.log("password no encontrada");
                     }
                 } catch (error) {
                     setDifferentLogin(false);
-                    console.log("Error not found");
+                    //console.log("Error not found");
                     setIsLoading(true);
 
                 }
@@ -188,7 +185,7 @@ const CreateUser = () => {
             .catch((error) => {
                 setDifferentLogin(false);
                 setIsLoading(true);
-                console.log("Nada encontrado");
+                //console.log("Nada encontrado");
             });
     };
     const [idRecover, setIdRecover] = useState("")
@@ -197,9 +194,9 @@ const CreateUser = () => {
     const recoverPassword = async () => {
         setIdRecover("")
         try {
-            console.log("first")
+           
             const response = await getUsersLoginRecover({ crewcode: crewcodeRecover, rank: rankRecover, email: emailRecover });
-            console.log(response.user)
+            //console.log(response.user)
             setRecoverSucces(true)
             setIdRecover(response.user._id)
             setCrewcodeLoginRecover(response.crewcode)
@@ -207,7 +204,7 @@ const CreateUser = () => {
 
 
         } catch (error) {
-            console.error(error);
+            //console.log(error);
             setRecoverSucces(false)
             setErrorRecover(true)
 
@@ -228,7 +225,7 @@ const CreateUser = () => {
         else {
             try {
                 const response = await getPasswordChangeCreate({ _id: idRecover, password: passwordNew });
-                console.log(response)
+                //console.log(response)
                 setOpenEditPasswordSucces(true)
                 setRecover(false)
                 setRecoverSucces(false)

@@ -1,19 +1,15 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { useDeleteNoteMutation, useGetNotesDateQuery } from '../app/apiSlice';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
-import { useUpdateNoteDeniedMutation, useUpdateNoteRequiredMutation } from '../app/apiSlice';
-import "./swap.css"
-import { TiDelete } from "react-icons/ti"
-import { fetchNotesDate, getNotesDate } from '../app/slices';
-import { Link } from 'react-router-dom';
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
+import { Button } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useEffect, useState } from 'react';
+import { TiDelete } from "react-icons/ti";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useDeleteNoteMutation, useGetNotesDateQuery, useUpdateNoteDeniedMutation, useUpdateNoteRequiredMutation } from '../app/apiSlice';
+import { getNotesDate } from '../app/slices';
+import "./swap.css";
 
 
 function Note() {
@@ -44,7 +40,7 @@ function Note() {
             newData[index] = { ...newData[index], requested: newRequested, denied: false };
             setData(newData);
         } catch (err) {
-            console.log(err);
+            //console.log(err);
         }
     };
     const cambiosCheckDenied = async (e, id, denied) => {
@@ -57,15 +53,15 @@ function Note() {
             setData(newData);
             //await refetch(); // Reload the data
         } catch (err) {
-            console.log(err);
+            //console.log(err);
         }
     };
 
 
     const { data: swapData = [], refetch } = useGetNotesDateQuery(cellDate);
-    console.log(swapData)
+   // console.log(swapData)
     const deleteSwapFunction = async (id) => {
-        console.log(id)
+        //console.log(id)
         await deleteSwap({ id }).unwrap();
         //window.location.reload()
         setOpenSwap(false);
@@ -78,12 +74,12 @@ function Note() {
     useEffect(() => {
         async function fetchData() {
             const data = await getNotesDate(cellDate);
-            console.log(data)
+            //console.log(data)
             setNuevo(data);
         }
         fetchData();
     }, [dispatch, deleteSwap])
-    console.log(nuevo)
+   
 
 
     useEffect(() => {
@@ -92,7 +88,7 @@ function Note() {
 
 
     const dataMatchSwap = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id2[0])
-    console.log(dataMatchSwap)
+    //console.log(dataMatchSwap)
 
 
     const fechaOriginal = cellDate

@@ -1,23 +1,16 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { useGetSwapsDateQuery, useCreateMessageChatMutation, useGetUsersByIdQuery } from '../app/apiSlice';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
-import { fetchInfoCrewcode, fetchConversation } from '../app/slices';
-import { useCreateConversationMutation } from '../app/apiSlice';
-import { fetchSwapsDate } from '../app/slices';
-import { useDeleteSwapMutation } from '../app/apiSlice';
-import { getSwapsDate } from '../app/slices';
-import "./swap.css"
-import { TiDelete } from "react-icons/ti"
-import { TbMessageDots } from "react-icons/tb"
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
-import { Link } from 'react-router-dom';
+import { Alert, AlertTitle, Button } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useEffect, useState } from 'react';
+import { TbMessageDots } from "react-icons/tb";
+import { TiDelete } from "react-icons/ti";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useCreateConversationMutation, useCreateMessageChatMutation, useDeleteSwapMutation, useGetSwapsDateQuery, useGetUsersByIdQuery } from '../app/apiSlice';
+import { fetchSwapsDate } from '../app/slices';
+import "./swap.css";
 
 
 function Swap() {
@@ -28,13 +21,13 @@ function Swap() {
     const [newMessage, setNewMessage] = useState("")
     const [errorConversation, setErrorConversation] = useState(false)
     const [succesConversation, setSuccesConversation] = useState(false)
-    console.log(cellDate)
+    
     const RankUser = localStorage.getItem('Rank');
     const id = localStorage.getItem("IDUserLogin")
     const id2 = JSON.parse(id)
     const [conversationId, setConversationId] = useState(null); // state to store the conversation ID
     const dispatch = useDispatch()
-    const [message, setMessage] = useState('');
+    
 
     useEffect(() => {
         if (!id) {
@@ -53,9 +46,9 @@ function Swap() {
 
 
     const { data: swapData = [], refetch } = useGetSwapsDateQuery(cellDate);
-    console.log(swapData)
+    //console.log(swapData)
     const deleteSwapFunction = async (id) => {
-        console.log(id)
+        //console.log(id)
         await deleteSwap({ id }).unwrap();
         //window.location.reload()
         setOpenSwap(false);
@@ -71,7 +64,7 @@ function Swap() {
         }
         fetchData();
     }, [dispatch, deleteSwap])
-    console.log(nuevo)
+    //console.log(nuevo)
 
 
     useEffect(() => {
@@ -94,9 +87,9 @@ function Swap() {
     });
     const todo = async (receiverId, index) => {
 
-        console.log("sadasd");
-        console.log(receiverId);
-        console.log(id2[0]);
+      
+        //console.log(receiverId);
+        //console.log(id2[0]);
         await createChat({ senderId: id2[0], receiverId: receiverId })
 
             .then((savedConversation) => {
@@ -113,7 +106,7 @@ function Swap() {
     const handleInputChange = (e, index) => {
         const { value } = e.target;
         setNewMessage((prevState) => ({ ...prevState, [index]: value }));
-        console.log(newMessage[index])
+        //console.log(newMessage[index])
     };
     const fechaOriginal = cellDate
     const partes = fechaOriginal.split('-');

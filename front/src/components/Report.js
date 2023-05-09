@@ -1,10 +1,7 @@
-import React from "react";
-import { useState } from "react";
-import { createRequestSlice } from "../app/slices";
-import { useCreateRequestMutation } from "../app/apiSlice";
-import { useDispatch } from "react-redux";
-import PuffLoader from "react-spinners/ClipLoader";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PuffLoader from "react-spinners/ClipLoader";
+import { useCreateRequestMutation } from "../app/apiSlice";
 
 function Report() {
 
@@ -14,7 +11,7 @@ function Report() {
     const [succes, setSucces] = useState(false)
     const navigate = useNavigate()
     const sendReport = async () => {
-        console.log(text)
+        //console.log(text)
         if (text.length < 10) {
             setMinLength(true)
             return
@@ -32,7 +29,7 @@ function Report() {
 
             }
             catch (err) {
-                console.log(err)
+                //console.log(err)
 
             }
         }

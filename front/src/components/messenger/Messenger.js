@@ -1,26 +1,21 @@
-import React, { useEffect } from "react";
-import { useGetConversationsQuery, useGetUsersByIdQuery, useGetMessagesConversationQuery } from "../../app/apiSlice";
-import { useState } from "react";
-import Conversation from "./Conversation"
-import { useDispatch } from "react-redux";
-import { fetchMessagesId } from "../../app/messagesSlice";
-import Message from "./Message"
-import axios from "axios";
-import { useCreateMessageChatMutation } from "../../app/apiSlice";
-import { useRef } from "react";
-import { io } from "socket.io-client"
-import { useDeleteConversationMutation } from "../../app/apiSlice";
-import { fetchConversation } from "../../app/slices";
-import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import { TiDelete } from 'react-icons/ti';
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+import { useCreateMessageChatMutation, useDeleteConversationMutation, useGetUsersByIdQuery } from "../../app/apiSlice";
+import { fetchMessagesId } from "../../app/messagesSlice";
+import { fetchConversation } from "../../app/slices";
+import Conversation from "./Conversation";
+import Message from "./Message";
 
 
-import "./Messenger.css"
+import "./Messenger.css";
 
 function Messenger() {
     const dispatch = useDispatch();
@@ -72,13 +67,13 @@ function Messenger() {
 
         try {
             const result = await deleteConversation({ conversationId });
-            console.log(result); // log the result to the console
+            //console.log(result); // log the result to the console
             setConversations(conversations.filter(c => c._id !== conversationId));
             setCurrentChat(null)
             setNewMessage("")
 
         } catch (err) {
-            console.log(err); // log any errors to the console
+            //console.log(err); // log any errors to the console
         }
 
     }
@@ -86,7 +81,7 @@ function Messenger() {
     useEffect(() => {
         socket.current.emit("addUser", data._id)
         socket.current.on("getUsers", data => {
-            console.log(data)
+            //console.log(data)
         })
     }, [data])
 
@@ -97,7 +92,7 @@ function Messenger() {
         };
         getConversations();
     }, [dispatch, arrivalMessage])
-    console.log(conversations)
+    //console.log(conversations)
 
 
 
@@ -107,10 +102,10 @@ function Messenger() {
             setMessages(response.payload);
         };
         getMessages();
-        //const intervalId = setInterval(getMessages, 1000); // Set a timeout every 1000ms
-        //return () => clearInterval(intervalId);
+        const intervalId = setInterval(getMessages, 3000); // Set a timeout every 3000ms
+        return () => clearInterval(intervalId);
     }, [dispatch, currentChat, newMessage])
-    console.log(messages)
+   // console.log(messages)
 
 
     const handleSubmit = async (e) => {
@@ -134,11 +129,11 @@ function Messenger() {
     const handleChatClick = (conversation, index) => {
         if (conversation === currentChat) {
             setCurrentChat(null);
-            console.log(index)
+            //console.log(index)
             setOpen(prevState => ({ ...prevState, [index]: false }));
         } else {
             setCurrentChat(conversation);
-            console.log(index)
+           // console.log(index)
             setOpen(prevState => {
                 const newOpen = {};
                 Object.keys(prevState).forEach(key => {

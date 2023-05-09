@@ -1,22 +1,16 @@
-import React, { useState } from "react";
-import { useGetUsersByIdQuery } from "../app/apiSlice";
-import { useParams } from "react-router-dom";
-import { useUpdateUserMutation } from "../app/apiSlice";
-import { Link } from "react-router-dom";
-import { useUpdateUserPasswordMutation } from "../app/apiSlice";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import PuffLoader from "react-spinners/ClipLoader";
-import { MdDelete, MdModeEdit } from "react-icons/md"
-import { GiCancel } from "react-icons/gi"
-import { TiTick } from "react-icons/ti"
-import "./EditProfile.css"
-import { useDeleteUserMutation } from "../app/apiSlice";
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle, Checkbox } from "@mui/material";
+import { Alert, AlertTitle, Button, Checkbox, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import React, { useEffect, useState } from "react";
+import { GiCancel } from "react-icons/gi";
+import { MdDelete, MdModeEdit } from "react-icons/md";
+import { TiTick } from "react-icons/ti";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import PuffLoader from "react-spinners/ClipLoader";
+import { useDeleteUserMutation, useGetUsersByIdQuery, useUpdateUserMutation, useUpdateUserPasswordMutation } from "../app/apiSlice";
+import "./EditProfile.css";
 
 
 
@@ -24,11 +18,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 function EditProfile() {
     const id = useParams()
-    console.log(id.id)
+    //console.log(id.id)
     const navigate = useNavigate()
 
     const { data: swapData = [] } = useGetUsersByIdQuery(id.id)
-    console.log(swapData)
+    //console.log(swapData)
     const [shown2, setShown2] = useState(false)
     const switchShown2 = () => setShown2(!shown2);
     const [shown, setShown] = useState(false)
@@ -40,7 +34,7 @@ function EditProfile() {
     const [passwordOld, setPasswordOld] = useState("")
     const id2 = localStorage.getItem("IDUserLogin")
     const id3 = JSON.parse(id2)
-    const [deleteUserWarning, setDeteleteUserWarning] = useState(false)
+    
     const [deleteUser] = useDeleteUserMutation()
 
 
@@ -55,9 +49,9 @@ function EditProfile() {
 
     }, [])
 
-    console.log(id.id)
-    console.log(id2)
-    console.log(id3[0])
+    //console.log(id.id)
+    //console.log(id2)
+   // console.log(id3[0])
     const [tipoRank, setTipoRank] = useState(swapData.rank)
     const [roster, setRoster] = useState(swapData.roster)
     const [part, setPart] = useState(swapData.part)
@@ -70,10 +64,10 @@ function EditProfile() {
 
 
 
-    console.log(roster)
+    //console.log(roster)
     const updateProfile = async () => {
         if (roster > 16 || roster < 1) {
-            console.log("first Update")
+          
             setFailRoster(true)
             return
         }
@@ -104,7 +98,7 @@ function EditProfile() {
 
         else {
             if (passwordOld !== swapData.password) {
-                console.log("adios")
+              
                 setFail(true)
                 return
             }
@@ -125,7 +119,7 @@ function EditProfile() {
     }
     useEffect(() => {
         if (roster > 16 || roster < 1) {
-            console.log("first Update")
+            
             setFailRoster(true)
 
         } else {
@@ -135,7 +129,7 @@ function EditProfile() {
     }, [roster])
 
     const deleteUserFunction = async (id) => {
-        console.log(id)
+        //console.log(id)
         await deleteUser(id).unwrap();
         localStorage.clear()
         navigate("/")

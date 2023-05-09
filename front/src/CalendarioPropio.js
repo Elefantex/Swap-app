@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from "react";
-import "./Test.css";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { CSSProperties } from "react";
-import PuffLoader from "react-spinners/ClipLoader";
-import { getNotes } from "./app/slices";
-import { BiInfoCircle } from "react-icons/bi"
+import { Button } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { BiInfoCircle } from "react-icons/bi";
+import { Link, useNavigate } from "react-router-dom";
+import PuffLoader from "react-spinners/ClipLoader";
+import "./Test.css";
+import { getNotes } from "./app/slices";
 
 
 
 
 const CalendarioPropio = () => {
   const fecha = new Date();
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const [mes, setMes] = useState(fecha.getMonth());
   const [anio, setAnio] = useState(fecha.getFullYear());

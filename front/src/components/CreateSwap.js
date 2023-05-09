@@ -1,15 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios'
+import { Button, FormHelperText, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { AiOutlineCalendar, AiOutlineSend } from "react-icons/ai";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCreateSwapMutation, useGetUsersByIdQuery } from '../app/apiSlice';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import "./CreateSwap.css"
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle, FormHelperText } from "@mui/material";
-import { AiOutlineSend, AiOutlineCalendar } from "react-icons/ai"
-import { useLocation } from 'react-router-dom';
+import "./CreateSwap.css";
 
 
 
@@ -49,8 +43,8 @@ function CreateSwap() {
     createSwap({ tipoSwap, date, inicio, fin, razon, rank, crewcode: swapData.crewcode, roster: swapData.roster, userId: id[0] })
     setSwapDone(true)
   }
-  console.log(id)
-  console.log(swapData.roster)
+  //console.log(id)
+  //console.log(swapData.roster)
   return (<>
     <div className='todoCreateSwapCaja'>
       <div className='datos'>

@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { fetchUsers } from "../app/slices";
-import { useDispatch } from "react-redux";
-import { useGetUsersQuery, useCreateMessageChatMutation, useCreateConversationMutation, useGetUsersByIdQuery } from "../app/apiSlice";
-import { fetchUsersInfo } from "../app/slices";
-import { useNavigate } from "react-router-dom";
-import "./partFinder.css"
-import { Button, TextField, Select, MenuItem, InputLabel, Alert, AlertTitle } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCreateConversationMutation, useCreateMessageChatMutation, useGetUsersQuery } from "../app/apiSlice";
+import "./partFinder.css";
 
 
 function PartFinder() {
     const id = localStorage.getItem("IDUserLogin")
     const id2 = JSON.parse(id)
     const navigate = useNavigate()
-    const dispatch = useDispatch()
     const [fetchData, setFetchData] = useState([])
     const [isOpen, setIsOpen] = useState(false);
     const [newMessage, setNewMessage] = useState("")
@@ -26,8 +20,8 @@ function PartFinder() {
     const [succesConversation, setSuccesConversation] = useState(false)
 
     const { data: swapData = [] } = useGetUsersQuery()
-    const { data: swapData2 = [] } = useGetUsersByIdQuery(id2)
-    console.log(swapData2.part)
+   
+    //console.log(swapData2.part)
 
     useEffect(() => {
         if (!id) {
@@ -41,16 +35,16 @@ function PartFinder() {
         setFetchData(filteredData);
     }, [swapData]);
 
-    console.log(fetchData)
+    //console.log(fetchData)
 
     const [openError, setOpenError] = useState(false)
     const todo = async (receiverId, index) => {
         setErrorConversation(false)
         setSuccesConversation(false)
 
-        console.log("sadasd");
-        console.log(receiverId);
-        console.log(id2[0]);
+       ;
+        //console.log(receiverId);
+        //console.log(id2[0]);
         await createChat({ senderId: id2[0], receiverId: receiverId })
 
             .then((savedConversation) => {
@@ -70,7 +64,7 @@ function PartFinder() {
     const handleInputChange = (e, index) => {
         const { value } = e.target;
         setNewMessage((prevState) => ({ ...prevState, [index]: value }));
-        console.log(newMessage[index])
+        //console.log(newMessage[index])
     };
 
     const [openSwap, setOpenSwap] = useState(false);
