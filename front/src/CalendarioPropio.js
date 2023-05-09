@@ -129,14 +129,13 @@ const CalendarioPropio = () => {
         </DialogTitle>
         <DialogContent>
           <div id="alert-dialog-description">
-            This is a calendar where you can add info about the swaps that you have requested to another people.
-            Just press the day and it will go to create a note with some info so you can remember.
-            Whenever you have a note, it will be shown in this calendar with the Crewcode of the one requested.
-            <div>
-            You can access to all your notes in your profile
+            This self calendar has been created to help you add notes for any requested swaps. This way, you can easily see what you have requested and remember it better, even if it is denied.
+            If you want to create a note, you can do so by clicking on the specific day on the calendar or by clicking on the "Create Note" button.           
+             <div>
+              The notes will be added with the crew code and additional information about the swap you requested.
             </div>
             <div>
-              The denied notes will shown as blotted 
+              You have access to your notes also at you profile. (The denied notes will appear crossed out for easier recognition)
             </div>
           </div>
         </DialogContent>
@@ -199,7 +198,7 @@ const CalendarioPropio = () => {
                   const formattedMonth = (mes + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
                   const cellDate = `${anio}-${formattedMonth}-${formattedItem}`;
 
-                  const dataMatchInfo = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id[0] )
+                  const dataMatchInfo = data.filter((dataItem) => dataItem.date === cellDate && dataItem.userId === id[0])
 
                   return (
                     <th key={key + i} className="dia">
@@ -228,8 +227,8 @@ const CalendarioPropio = () => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {item.denied ?<del>{item.crewcode}</del>:<>{item.crewcode}</>}
-                                    
+                                    {item.denied ? <del>{item.crewcode}</del> : <>{item.crewcode}</>}
+
                                   </div>
                                 </Link>
                               </div>
@@ -263,7 +262,7 @@ const CalendarioPropio = () => {
 
                             <div
                               style={{
-                                height: `60%`,
+                                height: `100%`,
                                 position: "absolute",
                                 bottom: 0,
                                 left: 0,

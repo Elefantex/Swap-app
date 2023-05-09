@@ -175,23 +175,29 @@ const Test = () => {
         </DialogTitle>
         <DialogContent>
           <div id="alert-dialog-description">
-            This is a calendar where you can see the swaps requested by the people who can swap with you.
-            That means that if you are JU you will see JU and JUPU swaps.If you are JUPU you will see JU,JUPU and PU swaps.
-            If you are PU you will see JUPU and PU swaps.
-            Just press the day and it will show the info about the swaps of that day.
-            If you want to create a swap for a day, go to "Create Swap"
+            This calendar is use for people to offer their swaps and try to change their duties with each other, depending on your rank:
             <div>
-              In the top you can filter by the roster, if none are selected it will show all rosters.
+              JU can see JU and JUPU.
             </div>
             <div>
-              You have a <b>Map Key </b>in the bottom to understand the colours.
+              JUPU can see JU, JUPU and PU
             </div>
-            <div><b>Swap</b> You are asking for someone who wants to take your duty.</div>
-            <div><b>Offer day off</b> You are offering your day off, as you want to fly more.
-            </div>
-            <div><b>Another Reason</b> You want to have a shorter duty or a different one.</div>
             <div>
-              You can access to all your swaps in your profile
+              PU can see JUPU and PU
+            </div>
+            By clicking on the day at the calendar will show you the different offers of swaps for that day. If you want to create a swap for that day it will give you the option by clicking on “Create Swap”.
+            <div>
+              In the top of the screen you can filter by roster number, if not all rosters will appear.
+            </div>
+            <div>
+              You have useful information at the bottom of the screen to understand the colours:
+            </div>
+            <div><b>Swap</b> requesting swap to change your duty </div>
+            <div><b>Offer day off</b> Offering your day off for a new duty
+            </div>
+            <div><b>Another Reason</b> Looking for a short duty or anything else that suits you better than your actual duty</div>
+            <div>
+              You can access to all of this information about requested swaps in your profile.
             </div>
 
           </div>
@@ -239,7 +245,7 @@ const Test = () => {
           return (
             <>
               <label className="" style={{ margin: "10px" }}>
-                
+
                 <b>{item}</b>
 
                 <input className="" type="checkbox" name="roster" id="roster-`${item}`" onChange={filterRoster} value={item} />
@@ -324,6 +330,11 @@ const Test = () => {
                   return (
                     <th key={key + i} className="dia">
                       <div style={{ height: "100%", position: "relative" }}>
+                        <div>
+
+                          {formattedItem !== 0 && item}
+
+                        </div>
 
 
                         {dataMatchAnother ? <Link to={`/swap/${cellDate}`}>
@@ -344,11 +355,21 @@ const Test = () => {
 
                           <div style={{ height: "20%", backgroundColor: bgColorSwap, position: "absolute", bottom: 0, left: 0, right: 0 }}></div>
                         </Link> : <div style={{ height: "20%", backgroundColor: "#f9f9f9", position: "absolute", bottom: 0, left: 0, right: 0 }}></div>}
+                        {dataMatchOffer || dataMatchAnother || dataMatchSwap ? <div></div> : <div
+                        >
+                          <Link to={`/create`} state={{ dateFrom: cellDate }}
+                            style={{
+                              height: `100%`,
+                              position: "absolute",
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
 
-                        <div>
-                          {formattedItem !== 0 && item}
+                            }}
+                          >
+                          </Link></div>}
 
-                        </div>
+
                       </div>
                     </th>
 
