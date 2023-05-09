@@ -630,7 +630,7 @@ const CreateUser = () => {
 
                             </div>
                             : <div></div>}
-                        
+
                         {succes
                             ? <div>
                                 <Alert severity="error">
@@ -676,26 +676,29 @@ const CreateUser = () => {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {"Loading..."}
-                        <PuffLoader
+                        
+                        {differentLogin ? <div> {"Loading..."}<PuffLoader
                             color="#000000"
                             loading="true"
                             size={30}
                             speedMultiplier="0.8"
                             aria-label="Loading Spinner"
                             data-testid="loader"
-                        />
+                        /></div>
+                            : <div>{"Login error"}</div>
+                        }
+
                     </DialogTitle>
                     <DialogContent>
                         {differentLogin ?
                             <div id="alert-dialog-description">
-                                Loading...</div> 
-                                : <div id="alert-dialog-description">
+                                Loading...</div>
+                            : <div id="alert-dialog-description">
                                 <Alert severity="error">
                                     <AlertTitle>Error</AlertTitle>
                                     Incorrect Crewcode/password
                                 </Alert>
-                                <div style={{ display: "flex",justifyContent:"center",alignItems:"center" }}>
+                                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                     <Button onClick={handleCloseSwap}
                                         autoFocus
                                         color="error"
