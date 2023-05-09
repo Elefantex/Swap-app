@@ -40,6 +40,8 @@ const CreateUser = () => {
 
     const [succes, setSucces] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingRegister, setIsLoadingRegister] = useState(false);
+
 
 
 
@@ -114,6 +116,7 @@ const CreateUser = () => {
         }
         else {
             try {
+                setIsLoadingRegister(true)
                 const userData = { email, password, crewcode, rank, part, roster };
                 await createUSer(userData);
                 setEmail("");
@@ -121,17 +124,18 @@ const CreateUser = () => {
                 setPassword2("");
                 setCrewcode("");
                 setRegistro(false);
+                setErrorRegister(false)
                 setCrewCodeLogin(crewcode)
                 setPasswordLogin(password)
                 console.log("User was created successfully!");
                 dispatch(fetchUsersLogin({ crewcode: crewcode, password: password }))
             } catch (err) {
+                setErrorRegister(true)
+
                 console.log("error en user")
                 console.log(err);
                 setFailCrewcode(true);
                 setRegistro(true);
-                setErrorRegister(true)
-
             }
         }
     };
@@ -316,6 +320,12 @@ const CreateUser = () => {
         }
 
     };
+    const handleCloseRegister = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            setIsLoadingRegister(false)
+        }
+
+    };
 
 
     return (
@@ -449,6 +459,56 @@ const CreateUser = () => {
 
                             </div>
                         </div>
+                        <Dialog
+                            disableEscapeKeyDown
+
+                            open={isLoadingRegister}
+                            onClose={handleCloseRegister}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+
+                                {errorRegister ? <div>{"Register error"} </div>
+                                    : <div>{"Loading..."}<PuffLoader
+                                        color="#000000"
+                                        loading="true"
+                                        size={30}
+                                        speedMultiplier="0.8"
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                    /></div>
+                                }
+
+                            </DialogTitle>
+                            <DialogContent>
+                                {errorRegister ?
+
+
+                                    <div id="alert-dialog-description">
+                                        <Alert severity="error">
+                                            <AlertTitle>Error</AlertTitle>
+                                            Error in any field or Crewcode is on use
+                                        </Alert>
+                                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                            <Button onClick={handleCloseRegister}
+                                                autoFocus
+                                                color="error"
+                                                variant="contained" style={{
+                                                    marginTop: '10px',
+                                                }}
+                                            >
+                                                Ok
+                                            </Button>
+                                        </div>
+
+                                    </div>
+                                    : <div id="alert-dialog-description">
+                                        Loading...</div>}
+
+                            </DialogContent>
+
+                        </Dialog>
                         {differentPassword ? <div>
                             <Alert severity="error">
                                 <AlertTitle>Error</AlertTitle>
@@ -456,13 +516,7 @@ const CreateUser = () => {
                             </Alert>
 
                         </div> : <div></div>}
-                        {errorRegister ? <div>
-                            <Alert severity="error">
-                                <AlertTitle>Error</AlertTitle>
-                                Error in any field or Crewcode is on use
-                            </Alert>
-                        </div> : <div></div>}
-
+                        
                         {failRoster ? <div>
                             <Alert severity="warning">
                                 <AlertTitle>Error</AlertTitle>
@@ -676,7 +730,7 @@ const CreateUser = () => {
                     aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">
-                        
+
                         {differentLogin ? <div> {"Loading..."}<PuffLoader
                             color="#000000"
                             loading="true"
