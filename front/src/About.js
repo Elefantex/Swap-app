@@ -9,7 +9,7 @@ function About() {
         <>
             <div>
                 <p>
-                    For any query related or info contact :
+                    For any query related or info contact : sabomadeveloper@gmail.com
                    
                 </p>
             </div>
