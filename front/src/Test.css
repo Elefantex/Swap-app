@@ -85,6 +85,7 @@ th {
     padding-top: 56px;
     align-items: center;
     flex-direction: column;
+    margin-top: 5%;
 }
 .pruebaCalendario{
     position: absolute;
