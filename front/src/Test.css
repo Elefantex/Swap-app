@@ -81,7 +81,10 @@ th {
 
 
 .moviles {
+    display: flex;
     padding-top: 56px;
+    align-items: center;
+    flex-direction: column;
 }
 .pruebaCalendario{
     position: absolute;
